@@ -1,0 +1,26 @@
+{
+  "name": "solid-octo-garbanzo",
+  "version": "1.0.0",
+  "description": "Game Jam 2020",
+  "main": "index.js",
+  "scripts": {
+    "build:prod": "webpack -p",
+    "serve": "webpack-dev-server",
+    "server": "webpack-dev-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bromlu/solid-octo-garbanzo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bromlu/solid-octo-garbanzo/issues"
+  },
+  "homepage": "https://github.com/bromlu/solid-octo-garbanzo#readme",
+  "devDependencies": {
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  }
+}
