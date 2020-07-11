@@ -23,7 +23,7 @@ export default class DiceManager {
     // if (this.force > this.maxForce) this.force -= this.maxForce;
   }
 
-  getBoundedForce() {
+  getBoundedForce() { //gives a number between 0 and maxforce
     let dir = (Math.floor(this.force / this.maxForce) % 2);
     let f = this.force % this.maxForce
     return dir == 0 ? f : this.maxForce - f;

@@ -8,7 +8,7 @@ export class Player {
     this.x = 100; // middle of player (right pixel)
     this.y = 200;  // bottom of player
     this.theta = 0; //0 theta means facing up
-    this.r = 32;
+    this.r = 16;
     this.a = 0;
     this.aTheta = 0;
     this.v = 0;
@@ -22,13 +22,17 @@ export class Player {
 
     this.hurtTimer = 0;
 
-
-    this.specialPower = 0
-    this.maxSpecialPower = 100
+    this.chargingSpecial = false;
   }
 
   draw(ctx) {
     ctx.save();
+    
+    ctx.beginPath()
+    ctx.arc(this.x, this.y, this.r, 0, TAU);
+    ctx.closePath()
+    ctx.fill();
+
 
     ctx.translate(this.x, this.y);
     ctx.rotate(this.theta);
@@ -39,20 +43,14 @@ export class Player {
     ctx.restore();
   }
 
-  getBoundedSpecialPower() {
-    let dir = (Math.floor(this.specialPower / this.maxSpecialPower) % 2);
-    let f = this.specialPower % this.maxSpecialPower
-    return dir == 0 ? f : this.maxSpecialPower - f;
-  }
-
   update() {
     if (!diceManager.rolling) {
       if (keys[SPACE]) {
-        this.specialPower += 1
-      } else if (this.specialPower > 0) {
-        this.fireSpecial(this.getBoundedSpecialPower())
+        this.chargingSpecial = true;
+      } else if (this.chargingSpecial) {
+        this.fireSpecial(diceManager.getBoundedForce())
         diceManager.rollAll();
-        this.specialPower = 0
+        this.chargingSpecial = false
       }
     }
 
@@ -81,10 +79,9 @@ export class Player {
     this.x = bounded(-SIZE, this.x, SIZE);
   }
 
-  fireSpecial(specialPower) {
-    console.log(diceManager.allDice[0].face)
+  fireSpecial(diceForce) {
     if (diceManager.allDice[0].face == "Dash") {
-      this.v = specialPower
+      this.v += diceForce * 200;
     }
   }
 }

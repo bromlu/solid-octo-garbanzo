@@ -9,6 +9,7 @@ export class Bullet {
 
     this.sinkInst = 0;
     this.sinking = false;
+    this.sunk = false;
     this.friction = .95;
   }
   draw(ctx) {
@@ -34,7 +35,7 @@ export class Bullet {
     this.vx *= this.friction;
     this.vy *= this.friction;
 
-    if (Math.abs(this.vx) + Math.abs(this.vy)  < .1) {
+    if (Math.abs(this.vx) + Math.abs(this.vy)  < .5) {
       this.sinking = true;
       this.sinkInst = Date.now() + 1000;
     }

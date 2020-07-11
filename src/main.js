@@ -11,12 +11,14 @@ import { Spawner } from './spawner'
 
 import { Enemy } from './enemy';
 import { RandomMovementAI, PatrolAI, TargettingAI } from './AI'
+import { CollisionManager } from "./collisions";
 
 const ctx = canvas.getContext("2d")
 canvas.width = SIZE
 canvas.height = SIZE
 
 export const diceManager = new DiceManager()
+const collisionManager = new CollisionManager()
 
 export const player = new Player();
 const spawner = new Spawner();
@@ -110,4 +112,6 @@ function gameUpdate() {
   diceManager.update();
   
   camera.update();
+
+  collisionManager.update();
 }
