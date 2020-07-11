@@ -62,8 +62,8 @@ export class Enemy {
       if (this.AI.useShot(this) && now > this.lastShot + this.reloadTime) {
         let useRight = this.AI.useRightSide;
         let n = this.numBullets;
+        let spread = Math.PI/2;
         if (useRight) {
-          let spread = Math.PI/2;
           for (let i = 0; i < n; i++)
           {
             let dir = this.theta + Math.PI/2 - spread/2 + ((i+1) * (spread / (n+2)))
