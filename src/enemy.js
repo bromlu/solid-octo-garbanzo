@@ -29,6 +29,7 @@ export class Enemy {
         this.bulletV = 30;
 
         this.health = 100;
+        this.sunk = false;
     }
 
     update() {
@@ -95,5 +96,13 @@ export class Enemy {
 
         ctx.restore();
 
+    }
+
+    handleCollision() {
+        this.health -= 100;
+        if(this.health <= 0) {
+            // TODO add sinking animation :) 
+            this.sunk = true;
+        }
     }
 }

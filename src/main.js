@@ -27,6 +27,7 @@ export const camera = new Camera();
 window.camera = camera;
 export const enemies = [];
 export const enemyBullets = [];
+export const playerBullets = [];
 
 function init() {
   ctx.lineWidth = LINEWIDTH;
@@ -83,10 +84,13 @@ function gameDraw() {
   Particles.draw(ctx)
   player.draw(ctx);
   enemies.forEach(enemy => {
-    enemy.draw(ctx);
+    if (!enemy.sunk) enemy.draw(ctx);
   });
 
   enemyBullets.forEach(bullet => {
+    if (!bullet.sunk) bullet.draw(ctx);
+  });
+  playerBullets.forEach(bullet => {
     if (!bullet.sunk) bullet.draw(ctx);
   });
 
@@ -100,13 +104,20 @@ function gameUpdate() {
   Particles.update()
   player.update();
   spawner.update();
-  enemies.forEach(enemy => {
-    enemy.update();
-  });
+  for (let i = 0; i < enemies.length; i++) {
+    let enemy = enemies[i];
+    if (enemy.sunk) enemies.splice(i--, 1);
+    else enemy.update();
+  }
 
   for (let i = 0; i < enemyBullets.length; i++) {
     let bullet = enemyBullets[i];
     if (bullet.sunk) enemyBullets.splice(i--, 1);
+    else bullet.update();
+  }
+  for (let i = 0; i < playerBullets.length; i++) {
+    let bullet = playerBullets[i];
+    if (bullet.sunk) playerBullets.splice(i--, 1);
     else bullet.update();
   }
 
