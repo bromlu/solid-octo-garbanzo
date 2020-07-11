@@ -19,11 +19,13 @@ canvas.width = SIZE
 canvas.height = SIZE
 
 export const diceManager = new DiceManager()
+window.diceManager = diceManager;
 const collisionManager = new CollisionManager()
 
 export const player = new Player();
 window.player = player;
 const spawner = new Spawner();
+window.spawner = spawner;
 export const camera = new Camera();
 window.camera = camera;
 export const enemies = [];
@@ -31,7 +33,7 @@ window.enemies = enemies;
 export const enemyBullets = [];
 export const playerBullets = [];
 export const island = new Island();
-export const currentLevel = 1;
+export let currentLevel = 1;
 
 function init() {
   ctx.lineWidth = LINEWIDTH;
@@ -116,7 +118,7 @@ export function gameUpdate() {
   Particles.update()
   player.update();
   if (player.y < island.y) {
-    setTimeout(() => resetLevel(), 0);
+    setTimeout(() => setupLevel(), 0);
     gameState.setState(GameState.ISLAND, () => {}, () => {});
     diceManager.setDiceFacesInHtml()
   }
@@ -145,14 +147,15 @@ export function gameUpdate() {
   collisionManager.update();
 }
 
-export function resetLevel() {
+export function setupLevel() {
   console.log("asdf")
-  player.y = 0;
-  player.v = 0;
-  player.a = 0;
+  player.reset()
   enemyBullets.length = 0
   playerBullets.length = 0
   enemies.length = 0
   diceManager.resetDice();
-  console.log(enemies)
+  camera.yAnchor = 0;
+  currentLevel++;
+  spawner.addSpawnsForLevel(currentLevel)
+  console.log(currentLevel, spawner.enemiesToSpawn)
 }

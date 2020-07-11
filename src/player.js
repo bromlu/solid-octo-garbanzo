@@ -1,4 +1,4 @@
-import { TAU, SIZE, bounded } from "./globals";
+import { TAU, SIZE, bounded, lerp } from "./globals";
 import { imgs } from "./load"
 import { keys, UP, LEFT, RIGHT, SPACE } from "./inputs"
 import { diceManager, playerBullets, enemies } from "./main";
@@ -8,8 +8,8 @@ import Animation, { playerShipFrames } from "./animation";
 
 export class Player {
   constructor() {
-    this.x = 100; // middle of player (right pixel)
-    this.y = 200;  // bottom of player
+    this.x = 0; // middle of player (right pixel)
+    this.y = 0;  // bottom of player
     this.theta = 0; //0 theta means facing up
     this.r = 16;
     this.a = 0;
@@ -19,6 +19,7 @@ export class Player {
 
     this.forceTheta = .02;
     this.force = 1;
+    this.forceStuck = false;
 
     this.friction = .9
     this.frictionTheta = .8
@@ -29,6 +30,31 @@ export class Player {
     this.bulletV = 30;
 
     this.afterImages = [];
+    this.lastDash = 0;
+  }
+
+  reset() {
+    this.x = 0;
+    this.y = 0;
+    this.theta = 0;
+    this.a = 0;
+    this.aTheta = 0;
+    this.v = 0;
+    this.vTheta = 0;
+    this.forceTheta = .02;
+    this.force = 1;
+    this.forceStuck = false;
+    this.friction = .9
+    this.frictionTheta = .8
+
+    this.hurtTimer = 0;
+
+    this.chargingSpecial = false;
+    this.bulletV = 30;
+
+    this.afterImages = [];
+    this.lastDash = 0;
+
   }
 
   setAnimations() {
@@ -76,9 +102,6 @@ export class Player {
       }
       this.afterImages.push({x, y, theta})
     } 
-    // else if (this.afterImages) {
-    //   this.afterImages [];
-    // }
 
 }
 
@@ -89,7 +112,6 @@ export class Player {
       } else if (this.chargingSpecial) {
         this.fireSpecial(diceManager.getBoundedForce())
         diceManager.rollAll();
-        this.resolveDiceRoll();
         this.chargingSpecial = false
       }
     }
@@ -99,7 +121,7 @@ export class Player {
     if (Math.abs(this.v) < .01) this.v = 0;
     if (Math.abs(this.vTheta) < .01) this.vTheta = 0;
 
-    if (keys[UP]) {
+    if (keys[UP] || this.forceStuck) {
       this.a = this.force;
     } else this.a = 0;
     this.v += this.a;
@@ -123,10 +145,10 @@ export class Player {
     let frac = diceForce / diceManager.maxForce // 0 to 1
     if (diceManager.allDice[0].face == "Dash") {
       this.v += diceForce * 300;
+      this.lastDash = Date.now();
       this.afterImages = [];
     } else if (diceManager.allDice[0].face == "Fire") {
-      console.log("frac", frac)
-      let n = Math.floor(1 + frac * 3) * 2;
+      let n = Math.floor(lerp(1, 4, frac));
       let spread = Math.PI / 2;
       for (let i = 0; i < n; i++) {
         let dir = this.theta + Math.PI / 2 - spread / 2 + ((i + 1) * (spread / (n + 2)))
@@ -155,15 +177,39 @@ export class Player {
 
       diceManager.force = 0;
       diceManager.rollAll();
-      this.resolveDiceRoll();
     } 
   }
 
   isDashing() {
-    return this.v > 15
+    return this.v > 15 && Date.now() - this.lastDash < 1000
   }
 
   resolveDiceRoll() {
-    this.force = parseInt(diceManager.allDice[1].face)
+    if (diceManager.allDice[1]) this.resolveForceDice(diceManager.allDice[1].face);
+  }
+
+  resolveForceDice(face) {
+    this.forceStuck = false;
+    switch (face) {
+      case "-2":
+        this.force = 0.2
+        break;
+      case "-1":
+        this.force = 0.4;
+        break;
+      case "0":
+        this.force = 0.5;
+        break;
+      case "1":
+        this.force = 1;
+        break;
+      case "2":
+        this.force = 1.7
+        break;
+      case "3":
+        this.force = 2;
+        this.forceStuck = true;
+        break;
+    }
   }
 }

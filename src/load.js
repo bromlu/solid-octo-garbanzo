@@ -8,6 +8,8 @@ const imgSources = {
   island: "/assets/island.png",
   manta: "/assets/Manta_Ray.png",
   boat: "/assets/Boat_Movement.png",
+  bullet: "/assets/Cannonballs.png",
+  splash: "/assets/splash.png",
 }
 
 const audioSources = {
