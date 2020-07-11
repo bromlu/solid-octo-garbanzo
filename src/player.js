@@ -75,9 +75,10 @@ export class Player {
         ctx.restore();
       }
       this.afterImages.push({x, y, theta})
-    } else if (afthis.afterImagesterImages) {
-      this.afterImages [];
-    }
+    } 
+    // else if (this.afterImages) {
+    //   this.afterImages [];
+    // }
 
 }
 
