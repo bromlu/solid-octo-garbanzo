@@ -8,6 +8,12 @@ export default class DiceManager {
     this.rollDuration = 1000;
     this.maxRollDuration = 1500;
     this.lastRoll = 0;
+    this.force = 0.005;
+    this.forceVel = 0.005;
+  }
+
+  increaseForce() {
+    this.force += this.forceVel
   }
 
   addDice(faces, color) {
@@ -31,15 +37,17 @@ export default class DiceManager {
     }
   }
 
-  rollAll(callback) {
+  rollAll() {
     this.lastRoll = Date.now();
     let n = this.allDice.length;
     for (let i = 0; i < n; i++) {
       let dice = this.allDice[i];
       let targetIdx = Math.floor(Math.random() * 6)
-      dice.roll(targetIdx, randBell(this.rollDuration));
+      dice.roll(targetIdx, randBell(this.rollDuration), this.force);
       let face = dice.faces[targetIdx]; //TODO use me
     }
+
+    this.force = 0.003;
   }
 
 }

@@ -161,12 +161,12 @@ export class Dice {
   
   }
 
-  roll(targetIdx, duration) {
+  roll(targetIdx, duration, force) {
     this.rotXTarget = faceCoords[targetIdx].x + Math.random() * .5 - .25
     this.rotYTarget = faceCoords[targetIdx].y + Math.random() * .5 - .25
     this.rollStopTime = Date.now() + duration;
 
-    this.rotXVel = Math.random() * .005 + .005;
+    this.rotXVel = Math.random() * force + force;
     this.rotYVel = -.02
     // Math.random() * -.01 - .01;
   }

@@ -12,19 +12,23 @@ export const LEFT = 37
 export const UP = 38
 export const RIGHT = 39
 export const DOWN = 40
+
 export function setUpInputs() {
     window.addEventListener("keydown", e => {
         let k = e.keyCode
-        if (keys[k] == true) return;
+        if (keys[k] == true && k !== 32) return;
         keys[k] = true
         if (k == 32) {
-            diceManager.rollAll();
+            diceManager.increaseForce()
         }
 
     })
     window.addEventListener("keyup", e => {
         let k = e.keyCode
         keys[k] = false
+        if (k == 32) {
+            diceManager.rollAll();
+        }
     })
 
     window.addEventListener("mousedown", e => {
