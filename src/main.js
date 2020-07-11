@@ -8,7 +8,7 @@ import { preloadImages, doneLoadingImgs, imgs } from "./load";
 import { Player } from "./player";
 import { Camera } from "./camera.js";
 import { Enemy } from './enemy';
-import { RandomMovementAI } from './AI'
+import { RandomMovementAI, PatrolAI, TargettingAI } from './AI'
 const ctx = canvas.getContext("2d")
 canvas.width = SIZE
 canvas.height = SIZE
@@ -23,7 +23,9 @@ const player = new Player();
 window.camera = new Camera();
 
 /// TODO make spawner
-const enemy = new Enemy(120, 200, new RandomMovementAI());
+const enemy = new Enemy(120, 200, new PatrolAI(1000));
+const enemy2 = new Enemy(120, 200, new TargettingAI(player));
+const enemy3 = new Enemy(120, 200, new RandomMovementAI(1000));
 
 function init() {
   ctx.lineWidth = LINEWIDTH;
@@ -73,6 +75,8 @@ function gameDraw() {
   Particles.draw(ctx)
   player.draw(ctx);
   enemy.draw(ctx)
+  enemy2.draw(ctx)
+  enemy3.draw(ctx)
   // ctx.fillRect(player.x, player.y, 10, 10)
   ctx.fillRect(enemy.x, enemy.y, 10, 10)
   
@@ -85,6 +89,8 @@ function gameUpdate() {
   Particles.update()
   player.update();
   enemy.update();
+  enemy2.update();
+  enemy3.update();
   diceManager.update();
   
   camera.update();

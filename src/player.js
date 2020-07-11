@@ -5,7 +5,7 @@ export class Player {
   constructor() { 
     this.x = 100; // middle of player (right pixel)
     this.y = 200;  // bottom of player
-    this.theta = 0;
+    this.theta = 0; //0 theta means facing up
     this.r = 32;
     this.a = 0;
     this.aTheta = 0;
@@ -52,7 +52,7 @@ export class Player {
     this.vTheta += this.aTheta;
 
     this.theta += this.vTheta;
-    this.theta = bounded(-TAU/4, this.theta, TAU/4);
+    // this.theta = bounded(-TAU/4, this.theta, TAU/4);
     this.x += this.v * Math.sin(this.theta);
     this.y -= this.v * Math.cos(this.theta);
 
