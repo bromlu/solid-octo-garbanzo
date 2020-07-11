@@ -4,7 +4,7 @@ import { keys } from "./inputs"
 import { player } from "./main"
 
 const standardDiceFaces = ["1","2","3","4","5","6"]
-const specialAbilityDiceFaces = ["Dash","Dash","Dash","Dash"," ","??"]
+const specialAbilityDiceFaces = ["Dash","Fire","Fire","Fire","Fire","Fire"]
 export default class DiceManager {
   constructor() {
     this.allDice = [];

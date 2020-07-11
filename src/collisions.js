@@ -37,6 +37,6 @@ export class CollisionManager {
   }
 
   handlePlayerHurt() {
-    console.log("ouch")
+    player.handleCollision()
   }
 }

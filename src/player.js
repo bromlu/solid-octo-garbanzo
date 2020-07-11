@@ -1,7 +1,8 @@
 import { TAU, SIZE, bounded } from "./globals";
 import { imgs } from "./load"
 import { keys, UP, LEFT, RIGHT, SPACE } from "./inputs"
-import {diceManager } from "./main";
+import {diceManager, playerBullets } from "./main";
+import { Bullet } from "./bullet";
 
 export class Player {
   constructor() { 
@@ -23,6 +24,7 @@ export class Player {
     this.hurtTimer = 0;
 
     this.chargingSpecial = false;
+    this.bulletV = 30;
   }
 
   draw(ctx) {
@@ -82,6 +84,34 @@ export class Player {
   fireSpecial(diceForce) {
     if (diceManager.allDice[0].face == "Dash") {
       this.v += diceForce * 200;
+    } else if (diceManager.allDice[0].face == "Fire") {
+      let n = Math.floor(diceForce * 100);
+      let spread = Math.PI/2;
+      console.log("FIRE", n, spread)
+      for (let i = 0; i < n / 2; i++)
+      {
+        console.log("left side")
+        let dir = this.theta + Math.PI/2 - spread/2 + ((i+1) * (spread / (n+2)))
+        let xv = Math.sin(dir) * this.bulletV;
+        let yv = -Math.cos(dir) * this.bulletV;
+        playerBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
+      }
+      let dir = this.theta - Math.PI/2;
+      let xv = Math.sin(dir) * this.bulletV;
+      let yv = -Math.cos(dir) * this.bulletV;
+      for (let i = 0; i < n / 2; i++)
+      {
+        console.log("right side")
+        playerBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
+      }
+}
+  }
+
+  handleCollision() {
+    this.chargingSpecial = false;
+    if(!diceManager.rolling) {
+      diceManager.rollAll();
     }
+    // else take damage?
   }
 }

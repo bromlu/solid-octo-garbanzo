@@ -26,6 +26,7 @@ export const camera = new Camera();
 window.camera = camera;
 export const enemies = [];
 export const enemyBullets = [];
+export const playerBullets = [];
 
 function init() {
   ctx.lineWidth = LINEWIDTH;
@@ -88,6 +89,9 @@ function gameDraw() {
   enemyBullets.forEach(bullet => {
     if (!bullet.sunk) bullet.draw(ctx);
   });
+  playerBullets.forEach(bullet => {
+    if (!bullet.sunk) bullet.draw(ctx);
+  });
 
   diceManager.drawBar(ctx);
   // ctx.restore();
@@ -106,6 +110,11 @@ function gameUpdate() {
   for (let i = 0; i < enemyBullets.length; i++) {
     let bullet = enemyBullets[i];
     if (bullet.sunk) enemyBullets.splice(i--, 1);
+    else bullet.update();
+  }
+  for (let i = 0; i < playerBullets.length; i++) {
+    let bullet = playerBullets[i];
+    if (bullet.sunk) playerBullets.splice(i--, 1);
     else bullet.update();
   }
 
