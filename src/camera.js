@@ -1,4 +1,4 @@
-const { SIZE, bounded } = require("./globals");
+const { SIZE, bounded, TAU } = require("./globals");
 
 export class Camera {
   constructor() {
