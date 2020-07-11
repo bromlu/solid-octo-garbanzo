@@ -7,6 +7,8 @@ import DiceManager from "./dice-manager"
 import { preloadImages, doneLoadingImgs, imgs } from "./load";
 import { Player } from "./player";
 import { Camera } from "./camera.js";
+import { Enemy } from './enemy';
+import { RandomMovementAI } from './AI'
 const ctx = canvas.getContext("2d")
 canvas.width = SIZE
 canvas.height = SIZE
@@ -19,6 +21,10 @@ diceManager.addStandardDice();
 
 const player = new Player();
 window.camera = new Camera();
+
+/// TODO make spawner
+const enemy = new Enemy(250, 250, new RandomMovementAI());
+
 function init() {
   ctx.lineWidth = LINEWIDTH;
   preloadImages()
@@ -66,6 +72,7 @@ function gameDraw() {
 
   Particles.draw(ctx)
   player.draw(ctx);
+  enemy.draw(ctx)
   ctx.restore();
 
   diceManager.draw(ctx)
@@ -74,5 +81,6 @@ function gameDraw() {
 function gameUpdate() {
   Particles.update()
   player.update();
+  enemy.update();
   camera.update();
 }

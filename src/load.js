@@ -2,7 +2,8 @@
 export let loaded = 0;
 const sources = {
   player: "/assets/player.png",
-  map: "/assets/ocean.png"
+  map: "/assets/ocean.png",
+  enemy: "/assets/player.png"
 }
 export const imgs = {}
 
