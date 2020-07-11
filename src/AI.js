@@ -1,13 +1,13 @@
 export class RandomMovementAI {
     goForward() {
-        return Math.random() * 11 > 5
+        return true
     }
 
     goLeft() {
-        return Math.random() * 11 > 5
+        return false
     }
 
     goRight() {
-        return Math.random() * 11 > 5
+        return false
     }
 }

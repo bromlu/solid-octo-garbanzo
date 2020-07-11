@@ -23,7 +23,7 @@ const player = new Player();
 window.camera = new Camera();
 
 /// TODO make spawner
-const enemy = new Enemy(250, 250, new RandomMovementAI());
+const enemy = new Enemy(120, 200, new RandomMovementAI());
 
 function init() {
   ctx.lineWidth = LINEWIDTH;
@@ -63,7 +63,7 @@ gameState.tick();
 
 function gameDraw() {
   ctx.clearRect(0,0,SIZE,SIZE)
-  ctx.save();
+  // ctx.save();
 
   camera.moveCtx(ctx);
   let mapIdx = Math.floor(camera.y / MAPW);
@@ -73,8 +73,11 @@ function gameDraw() {
   Particles.draw(ctx)
   player.draw(ctx);
   enemy.draw(ctx)
-  ctx.restore();
-
+  // ctx.fillRect(player.x, player.y, 10, 10)
+  ctx.fillRect(enemy.x, enemy.y, 10, 10)
+  
+  // ctx.restore();
+  ctx.resetTransform();
   diceManager.draw(ctx)
 }
 

@@ -9,7 +9,7 @@ export class Player {
     this.r = 32;
     this.a = 0;
     this.aTheta = 0;
-    this.v = 1;
+    this.v = 0;
     this.vTheta = 0;
 
     this.forceTheta = .02;
@@ -22,12 +22,15 @@ export class Player {
   }
 
   draw(ctx) {
+    ctx.save();
+
     ctx.translate(this.x, this.y);
     ctx.rotate(this.theta);
     let left = - imgs.player.width/2;
     let top = - imgs.player.height / 2
     ctx.drawImage(imgs.player, left, top)
-    ctx.resetTransform();
+
+    ctx.restore();
   }
 
   update() {
