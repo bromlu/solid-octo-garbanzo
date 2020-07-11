@@ -24,6 +24,7 @@ export class CollisionManager {
       let dy = Math.abs(bullet.y - player.y)
       if (dx < player.r && dy < player.r) {
         bullet.sunk = true;
+        if(player.isDashing) return;
         this.handlePlayerHurt();
       }
     });
@@ -32,7 +33,7 @@ export class CollisionManager {
       let dx = Math.abs(enemy.x - player.x)
       let dy = Math.abs(enemy.y - player.y)
       if (dx < player.r && dy < player.r) {
-        if (player.v > 10) {
+        if (player.isDashing()) {
           this.handleEnemyHurt(enemy)
         } else {
           this.handlePlayerHurt();

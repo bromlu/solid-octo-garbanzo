@@ -1,11 +1,11 @@
 import { TAU, SIZE, bounded } from "./globals";
 import { imgs } from "./load"
 import { keys, UP, LEFT, RIGHT, SPACE } from "./inputs"
-import {diceManager, playerBullets } from "./main";
+import { diceManager, playerBullets } from "./main";
 import { Bullet } from "./bullet";
 
 export class Player {
-  constructor() { 
+  constructor() {
     this.x = 100; // middle of player (right pixel)
     this.y = 200;  // bottom of player
     this.theta = 0; //0 theta means facing up
@@ -17,7 +17,7 @@ export class Player {
 
     this.forceTheta = .02;
     this.force = 1;
-    
+
     this.friction = .9
     this.frictionTheta = .8
 
@@ -29,7 +29,7 @@ export class Player {
 
   draw(ctx) {
     ctx.save();
-    
+
     ctx.beginPath()
     ctx.arc(this.x, this.y, this.r, 0, TAU);
     ctx.closePath()
@@ -38,7 +38,7 @@ export class Player {
 
     ctx.translate(this.x, this.y);
     ctx.rotate(this.theta);
-    let left = - imgs.player.width/2;
+    let left = - imgs.player.width / 2;
     let top = - imgs.player.height / 2
     ctx.drawImage(imgs.player, left, top)
 
@@ -60,15 +60,15 @@ export class Player {
     this.vTheta *= this.frictionTheta;
     if (Math.abs(this.v) < .01) this.v = 0;
     if (Math.abs(this.vTheta) < .01) this.vTheta = 0;
-    
+
     if (keys[UP]) {
       this.a = this.force;
     } else this.a = 0;
     this.v += this.a;
-    
+
     if (keys[LEFT]) {
       this.aTheta = -this.forceTheta;
-    } else if(keys[RIGHT]) {
+    } else if (keys[RIGHT]) {
       this.aTheta = this.forceTheta;
     } else this.aTheta = 0;
     this.vTheta += this.aTheta;
@@ -83,35 +83,35 @@ export class Player {
 
   fireSpecial(diceForce) {
     if (diceManager.allDice[0].face == "Dash") {
-      this.v += diceForce * 200;
+      this.v += diceForce * 300;
     } else if (diceManager.allDice[0].face == "Fire") {
-      let n = Math.floor(diceForce * 100);
-      let spread = Math.PI/2;
-      console.log("FIRE", n, spread)
-      for (let i = 0; i < n / 2; i++)
-      {
-        console.log("left side")
-        let dir = this.theta + Math.PI/2 - spread/2 + ((i+1) * (spread / (n+2)))
+      let n = Math.floor(diceForce * 50);
+      let spread = Math.PI / 2;
+      for (let i = 0; i < n; i++) {
+        let dir = this.theta + Math.PI / 2 - spread / 2 + ((i + 1) * (spread / (n + 2)))
         let xv = Math.sin(dir) * this.bulletV;
         let yv = -Math.cos(dir) * this.bulletV;
         playerBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
       }
-      let dir = this.theta - Math.PI/2;
-      let xv = Math.sin(dir) * this.bulletV;
-      let yv = -Math.cos(dir) * this.bulletV;
-      for (let i = 0; i < n / 2; i++)
-      {
-        console.log("right side")
+      for (let i = 0; i < n; i++) {
+        let dir = this.theta - Math.PI / 2 - spread / 2 + ((i + 1) * (spread / (n + 2)))
+        let xv = Math.sin(dir) * this.bulletV;
+        let yv = -Math.cos(dir) * this.bulletV;
         playerBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
       }
-}
+    }
   }
 
   handleCollision() {
     this.chargingSpecial = false;
-    if(!diceManager.rolling) {
+    if (!diceManager.rolling) {
+      diceManager.force = 0;
       diceManager.rollAll();
     }
     // else take damage?
+  }
+
+  isDashing() {
+    return this.v > 10
   }
 }

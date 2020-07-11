@@ -73,11 +73,11 @@ export class Enemy {
             enemyBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
           }
         } else {
-          let dir = this.theta - Math.PI/2;
-          let xv = Math.sin(dir) * this.bulletV;
-          let yv = -Math.cos(dir) * this.bulletV;
           for (let i = 0; i < n; i++)
           {
+            let dir = this.theta - Math.PI/2 - spread/2 + ((i+1) * (spread / (n+2)))
+            let xv = Math.sin(dir) * this.bulletV;
+            let yv = -Math.cos(dir) * this.bulletV;
             enemyBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
           }
         }

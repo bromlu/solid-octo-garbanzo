@@ -3,8 +3,8 @@ export class Bullet {
   constructor(x, y, vx, vy) {
     this.x = x;
     this.y = y;
-    this.vx = randBell(vx, .8);
-    this.vy = randBell(vy, .8);
+    this.vx = randBell(vx, 0.2);
+    this.vy = randBell(vy, 0.2);
     this.rotate = false;
 
     this.sinkInst = 0;
