@@ -14,7 +14,7 @@ export class Bullet {
   }
   draw(ctx) {
     if (!this.rotate) {
-      ctx.fillStyle = "#333";
+      ctx.fillStyle = "#8B0000";
       ctx.beginPath()
       ctx.arc(this.x, this.y, 5, 0, TAU);
       ctx.closePath()

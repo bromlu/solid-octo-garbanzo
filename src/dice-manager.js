@@ -4,13 +4,13 @@ import { keys } from "./inputs"
 import { player } from "./main"
 import { sounds } from "./load";
 
-const controlModifierDiceFaces = ["1", "2", "0", "-1", "-2", "0"]
+const controlModifierDiceFaces = ["1", "2", "1", "-1", "-2", "-1"]
 const abilityDiceFaces = [" ", "Dash", "Fire"]
 
 const standardDiceFaces = ["1", "2", "0", "-1", "-2", "0"]
 const specialAbilityDiceFaces = ["Dash", "Fire", "Fire", "Dash", "Fire", "Fire"]
-const DashDiceFaces = ["Dash", "Dash", "Dash", "Dash", "Dash", "Dash"]
-const FireDiceFaces = ["Dash", "Fire", "Fire", "Dash", "Fire", "Fire"]
+const DashDiceFaces = ["Fire", "Dash", "Dash", "Dash", "Dash", "Dash"]
+const FireDiceFaces = ["Fire", "Fire", "Fire", "Fire", "Fire", "Fire"]
 export default class DiceManager {
   constructor() {
     this.allDice = [];
@@ -90,7 +90,8 @@ export default class DiceManager {
   }
 
   addSpecialAbilityDice(color = "#777") {
-    this.addDice(DashDiceFaces, color)
+    // this.addDice(DashDiceFaces, color)
+    this.addDice(FireDiceFaces, color)
   }
 
   draw(ctx) {
@@ -128,6 +129,7 @@ export default class DiceManager {
       dice.done = false;
       dice.face = dice.faces[targetIdx]; //TODO use me
     }
+    this.force = 0;
     this.rolling = true;
     this.rollStart = Date.now();
   }

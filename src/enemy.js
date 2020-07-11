@@ -1,5 +1,5 @@
 import { imgs } from "./load"
-import { enemyBullets } from "./main";
+import { enemyBullets, island } from "./main";
 import { Bullet } from "./bullet";
 import { SIZE, bounded, TAU} from "./globals";
 import Animation, { mantaRayFrames } from "./animation";
@@ -60,6 +60,7 @@ export class Enemy {
       this.x += this.v * Math.sin(this.theta);
       this.y -= this.v * Math.cos(this.theta);
       this.x = bounded(-SIZE, this.x, SIZE);
+      this.y = bounded(0, this.x, island.y);
 
       let now = Date.now();
 

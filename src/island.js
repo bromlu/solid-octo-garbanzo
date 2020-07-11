@@ -4,7 +4,7 @@ import { SIZE, MAPW, getEl } from "./globals"
 import { diceManager } from "./main"
 
 export class Island {
-  constructor(y=-1000) {
+  constructor(y=-6000) {
     this.y = y;
   }
 

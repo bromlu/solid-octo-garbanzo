@@ -34,6 +34,7 @@ export class Spawner {
   }
   
   addLevel2Spawns() {
+    console.log("lev2")
     this.enemiesToSpawn = [
       new Enemy(0, -1200, new TargettingAI(player), imgs.enemy),
       new Enemy(0, -800, new TargettingAI(player), imgs.enemy),

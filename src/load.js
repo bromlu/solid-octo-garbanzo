@@ -25,7 +25,7 @@ export function preloadAssets() {
 
   for (let key in audioSources) {
     sounds[key] = new Audio(audioSources[key])
-    sounds[key].oncanplay = onResrcLoad
+    sounds[key].onloadeddata = onResrcLoad
   }
 }
 window.sounds = sounds;

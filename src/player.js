@@ -28,9 +28,7 @@ export class Player {
     this.chargingSpecial = false;
     this.bulletV = 30;
 
-    
-
-    this.control = 10;
+    this.afterImages = [];
   }
 
   setAnimations() {
@@ -43,8 +41,10 @@ export class Player {
 
   draw(ctx) {
     ctx.save();
-
-    ctx.translate(this.x, this.y);
+    let x = this.x;
+    let y = this.y;
+    let theta = this.theta;
+    ctx.translate(x, y);
     ctx.rotate(this.theta);
 
     // ctx.beginPath()
@@ -54,25 +54,41 @@ export class Player {
 
     if (this.v > 2) {
       this.moveAnimation.draw(ctx, 0, 0, false, .4);
-    } else if (this.vTheta > .05) { 
+    } else if (this.vTheta > .07) { 
       this.turnAnimation.draw(ctx, 0, 0, true, .4);
-    } else if (this.vTheta < -.05) { 
+    } else if (this.vTheta < -.07) { 
       this.turnAnimation.draw(ctx, 0, 0, false, .4);
     } else {
       this.stillAnimation.draw(ctx, 0, 0, false, .4);
     }
-
+    
     ctx.restore();
+    if(this.isDashing()) {
+      for (let i = 0; i < this.afterImages.length; i+= 2) {
+        let afterimg = this.afterImages[i]
+        ctx.save();
+        ctx.translate(afterimg.x, afterimg.y);
+        ctx.rotate(afterimg.theta);
+        ctx.globalAlpha = .3;
+        this.moveAnimation.draw(ctx, 0, 0, false, .4);
+        ctx.globalAlpha = 1;
+        ctx.restore();
+      }
+      this.afterImages.push({x, y, theta})
+    } else if (afthis.afterImagesterImages) {
+      this.afterImages [];
+    }
+
 }
 
   update() {
     if (!diceManager.rolling) {
-      if (keys[SPACE] && this.control > 5) {
+      if (keys[SPACE]) {
         this.chargingSpecial = true;
       } else if (this.chargingSpecial) {
         this.fireSpecial(diceManager.getBoundedForce())
         diceManager.rollAll();
-        this.updateControl();
+        this.resolveDiceRoll();
         this.chargingSpecial = false
       }
     }
@@ -82,14 +98,14 @@ export class Player {
     if (Math.abs(this.v) < .01) this.v = 0;
     if (Math.abs(this.vTheta) < .01) this.vTheta = 0;
 
-    if (keys[UP] && this.control > -5) {
+    if (keys[UP]) {
       this.a = this.force;
     } else this.a = 0;
     this.v += this.a;
 
-    if (keys[LEFT] && this.control > 3) {
+    if (keys[LEFT]) {
       this.aTheta = -this.forceTheta;
-    } else if (keys[RIGHT] && this.control > -3) {
+    } else if (keys[RIGHT]) {
       this.aTheta = this.forceTheta;
     } else this.aTheta = 0;
     this.vTheta += this.aTheta;
@@ -103,10 +119,13 @@ export class Player {
   }
 
   fireSpecial(diceForce) {
+    let frac = diceForce / diceManager.maxForce // 0 to 1
     if (diceManager.allDice[0].face == "Dash") {
       this.v += diceForce * 300;
+      this.afterImages = [];
     } else if (diceManager.allDice[0].face == "Fire") {
-      let n = Math.floor(diceForce * 50);
+      console.log("frac", frac)
+      let n = Math.floor(1 + frac * 3) * 2;
       let spread = Math.PI / 2;
       for (let i = 0; i < n; i++) {
         let dir = this.theta + Math.PI / 2 - spread / 2 + ((i + 1) * (spread / (n + 2)))
@@ -126,24 +145,24 @@ export class Player {
   handleCollision() {
     this.chargingSpecial = false;
     if (!diceManager.rolling) {
+      if(diceManager.allDice.length === 1) {
+        // YOU LOSE
+        console.log("YOU LOSE")
+      } else {
+        diceManager.allDice.pop();
+      }
+
       diceManager.force = 0;
       diceManager.rollAll();
-      this.updateControl();
-    }
-    // else take damage?
+      this.resolveDiceRoll();
+    } 
   }
 
   isDashing() {
     return this.v > 15
   }
 
-  updateControl() {
-    this.control += 
-      parseInt(diceManager.allDice[1].face) +
-      parseInt(diceManager.allDice[2].face) +
-      parseInt(diceManager.allDice[3].face) +
-      parseInt(diceManager.allDice[4].face);
-    console.log(this.control)
-    this.control = 100
+  resolveDiceRoll() {
+    this.force = parseInt(diceManager.allDice[1].face)
   }
 }
