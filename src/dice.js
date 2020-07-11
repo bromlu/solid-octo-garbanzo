@@ -11,7 +11,7 @@ const faceCoords = [
 
 export class Dice {
   constructor(faces, color) {
-    this.face = 0;
+    this.face = "";
     this.faces = faces;
     this.done = true; //externally controlled
     this.canvas = document.createElement("canvas");

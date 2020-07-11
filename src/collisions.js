@@ -1,4 +1,4 @@
-import { enemies, player, enemyBullets, playerBullets } from './main'
+import { enemies, player, enemyBullets, playerBullets, island } from './main'
 
 export class CollisionManager {
   constructor() {
@@ -24,8 +24,7 @@ export class CollisionManager {
       let dy = Math.abs(bullet.y - player.y)
       if (dx < player.r && dy < player.r) {
         bullet.sunk = true;
-        if(player.isDashing) return;
-        this.handlePlayerHurt();
+        if (!player.isDashing()) this.handlePlayerHurt();
       }
     });
 
@@ -40,7 +39,6 @@ export class CollisionManager {
         }
       }
     });
-
   }
 
   handleEnemyHurt(enemy) {

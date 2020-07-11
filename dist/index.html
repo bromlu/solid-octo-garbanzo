@@ -27,14 +27,36 @@ void main() {
 </script>
 <script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
 <script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
-<body id="body">
-  <!-- <div id="menuDiv">
-    <button id="beginBtn">Begin</button>
-    <button id="credBtn">Credits</button>
-  </div> -->
+<body id="body">  
+  <div id="menuDiv"></div>
+  <div id="credDiv"></div>
 
-  <!-- <div class="nodisplay" id="credDiv"><button id="credDivbtn" class="large">Back</button></div> -->
   <canvas id="canvas"></canvas>
+  <div id="diceMenu" class="nodisplay">
+    Arggghhhh! Welcome to port captain!
+    
+    <div id="diceFaces">
+      <button id="reRollAbilities">Re-Roll Abilities</button>
+      <img id="abilityDiceFace1" src="./assets/dash.png">
+      <img id="abilityDiceFace2" src="./assets/dash.png">
+      <img id="abilityDiceFace3" src="./assets/dash.png">
+      <img id="abilityDiceFace4" src="./assets/dash.png">
+      <img id="abilityDiceFace5" src="./assets/dash.png">
+      <img id="abilityDiceFace6" src="./assets/dash.png">
+    </div>
+
+    <div id="diceFaces">
+      <button id="reRollControlModifiers">Re-Roll Control Modifiers</button>
+      <span id="controlDiceFace1">1</span>
+      <span id="controlDiceFace2">2</span>
+      <span id="controlDiceFace3">3</span>
+      <span id="controlDiceFace4">4</span>
+      <span id="controlDiceFace5">5</span>
+      <span id="controlDiceFace6">6</span>
+    </div>
+
+    <button id="continueBtn">Continue!</button>
+  </div>
 </body>
 <script src="src/bundle.js"></script>
 </html>

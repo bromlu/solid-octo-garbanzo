@@ -8,10 +8,10 @@ import { preloadAssets, doneLoadingResrcs, imgs } from "./load";
 import { Player } from "./player";
 import { Camera } from "./camera.js";
 import { Spawner } from './spawner'
-
 import { Enemy } from './enemy';
 import { RandomMovementAI, PatrolAI, TargettingAI } from './AI'
 import { CollisionManager } from "./collisions";
+import { Island } from "./island"
 
 export const audCtx = new AudioContext();
 const ctx = canvas.getContext("2d")
@@ -28,6 +28,8 @@ window.camera = camera;
 export const enemies = [];
 export const enemyBullets = [];
 export const playerBullets = [];
+export const island = new Island();
+export const currentLevel = 1;
 
 function init() {
   ctx.lineWidth = LINEWIDTH;
@@ -52,7 +54,8 @@ function init() {
 
 
 // game loop in state.js
-window.gameState = new GameState()
+export const gameState = new GameState();
+window.gameState = gameState;
 
 init();
 
@@ -72,7 +75,7 @@ function startGame() {
 
 gameState.tick();
 
-function gameDraw() {
+export function gameDraw() {
   ctx.clearRect(0,0,SIZE,SIZE)
   // ctx.save();
 
@@ -80,6 +83,13 @@ function gameDraw() {
   let mapIdx = Math.floor(camera.y / MAPW);
   ctx.drawImage(imgs.map, -SIZE, mapIdx*MAPW, MAPW, MAPW)
   ctx.drawImage(imgs.map, -SIZE, (mapIdx+1)*MAPW, MAPW, MAPW)
+  if (camera.yAnchor < island.y + SIZE) {
+    island.draw(ctx);
+  }
+  if (camera.yAnchor > -SIZE) {
+    island.drawPreviousIsland(ctx);
+  }
+
 
   Particles.draw(ctx)
   player.draw(ctx);
@@ -93,16 +103,20 @@ function gameDraw() {
   playerBullets.forEach(bullet => {
     if (!bullet.sunk) bullet.draw(ctx);
   });
-
   diceManager.drawBar(ctx);
   // ctx.restore();
   ctx.resetTransform();
   diceManager.draw(ctx)
 }
 
-function gameUpdate() {
+export function gameUpdate() {
   Particles.update()
   player.update();
+  if (player.y < island.y) {
+    setTimeout(() => resetLevel(), 0);
+    gameState.setState(GameState.ISLAND, () => {}, () => {});
+    diceManager.setDiceFacesInHtml()
+  }
   spawner.update();
   for (let i = 0; i < enemies.length; i++) {
     let enemy = enemies[i];
@@ -126,4 +140,17 @@ function gameUpdate() {
   camera.update();
 
   collisionManager.update();
+}
+
+export function resetLevel() {
+  console.log("asdf")
+  player.y = 0;
+  player.v = 0;
+  player.a = 0;
+  enemyBullets.length = 0
+  playerBullets.length = 0
+  enemies.length = 0
+  diceManager.resetDice();
+  console.log(enemies)
+  
 }

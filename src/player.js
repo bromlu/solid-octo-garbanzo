@@ -77,7 +77,7 @@ export class Player {
     // this.theta = bounded(-TAU/4, this.theta, TAU/4);
     this.x += this.v * Math.sin(this.theta);
     this.y -= this.v * Math.cos(this.theta);
-
+    if (this.y > 0) this.y = 0;
     this.x = bounded(-SIZE, this.x, SIZE);
   }
 

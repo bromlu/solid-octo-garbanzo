@@ -4,7 +4,8 @@ const imgSources = {
   player: "/assets/player.png",
   map: "/assets/ocean.png",
   enemy: "/assets/enemy.png",
-  dash: "/assets/dash.png"
+  dash: "/assets/dash.png",
+  island: "/assets/island.png",
 }
 
 const audioSources = {

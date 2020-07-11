@@ -16,12 +16,28 @@ export class Spawner {
     }
 
   }
+  addSpawnsForLevel(num) {
+    [
+      null,
+      this.addLevel1Spawns,
+      this.addLevel2Spawns,
+    ][num]()
+  }
   
   addLevel1Spawns() {
     this.enemiesToSpawn = [
-      new Enemy(0, -1200, new TargettingAI(player), imgs.enemy),
-      new Enemy(0, -800, new PatrolAI(1000), imgs.enemy),
+      new Enemy(0, -1200, new RandomMovementAI(1000), imgs.enemy),
+      new Enemy(0, -800, new RandomMovementAI(1000), imgs.enemy),
       new Enemy(0, -400, new RandomMovementAI(1000), imgs.enemy),
+      new Enemy(0, -400, new RandomMovementAI(1000), imgs.enemy),
+    ]
+  }
+  
+  addLevel2Spawns() {
+    this.enemiesToSpawn = [
+      new Enemy(0, -1200, new TargettingAI(player), imgs.enemy),
+      new Enemy(0, -800, new TargettingAI(player), imgs.enemy),
+      new Enemy(0, -400, new TargettingAI(player), imgs.enemy),
       new Enemy(0, -400, new TargettingAI(player), imgs.enemy),
     ]
   }

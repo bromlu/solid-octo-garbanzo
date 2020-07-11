@@ -1,4 +1,6 @@
-import { diceManager } from "./main";
+import { diceManager, gameState, gameUpdate, gameDraw, resetLevel } from "./main";
+import GameState from "./state"
+import { getEl } from "./globals";
 export const keys = {}
 
 export const K_ESC = 27
@@ -52,3 +54,7 @@ export function setUpInputs() {
         e.preventDefault()
     })
 }
+
+getEl("continueBtn").addEventListener("click", () => {
+    gameState.setState(GameState.GAME, gameUpdate, gameDraw)
+})

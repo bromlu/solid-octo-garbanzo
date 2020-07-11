@@ -1,11 +1,13 @@
 import { Dice } from "./dice";
-import { SIZE, randBell, bounded, lerp } from "./globals"
+import { SIZE, randBell, bounded, lerp, getEl } from "./globals"
 import { keys } from "./inputs"
 import { player } from "./main" 
 import { sounds } from "./load";
 
 const standardDiceFaces = ["1","2","3","4","5","6"]
 const specialAbilityDiceFaces = ["Dash","Fire","Fire","Dash","Fire","Fire"]
+const DashDiceFaces = ["Dash","Dash","Dash","Dash","Dash","Dash"]
+const FireDiceFaces = ["Dash","Fire","Fire","Dash","Fire","Fire"]
 export default class DiceManager {
   constructor() {
     this.allDice = [];
@@ -17,6 +19,37 @@ export default class DiceManager {
     this.maxForce = 0.15;
     this.rolling = false;
     this.rollStart = 0;
+  }
+
+  reRollControlModifiers() {
+    this.setDiceFacesInHtml()
+  }
+
+  reRollAbilities() {
+   this.setDiceFacesInHtml()
+  }
+
+  setDiceFacesInHtml() {
+    getEl('abilityDiceFace1').src = this.allDice[0].faces[0] === 'Dash' ? './assets/dash.png' : ''
+    getEl('abilityDiceFace2').src = this.allDice[0].faces[1] === 'Dash' ? './assets/dash.png' : ''
+    getEl('abilityDiceFace3').src = this.allDice[0].faces[2] === 'Dash' ? './assets/dash.png' : ''
+    getEl('abilityDiceFace4').src = this.allDice[0].faces[3] === 'Dash' ? './assets/dash.png' : ''
+    getEl('abilityDiceFace5').src = this.allDice[0].faces[4] === 'Dash' ? './assets/dash.png' : ''
+    getEl('abilityDiceFace6').src = this.allDice[0].faces[5] === 'Dash' ? './assets/dash.png' : ''
+    getEl('controlDiceFace1').innerHTML = this.allDice[1].faces[0]
+    getEl('controlDiceFace2').innerHTML = this.allDice[1].faces[1]
+    getEl('controlDiceFace3').innerHTML = this.allDice[1].faces[2]
+    getEl('controlDiceFace4').innerHTML = this.allDice[1].faces[3]
+    getEl('controlDiceFace5').innerHTML = this.allDice[1].faces[4]
+    getEl('controlDiceFace6').innerHTML = this.allDice[1].faces[5]
+  }
+
+  resetDice() {
+    this.allDice.forEach(dice => {
+      dice.rotXTarget = Math.PI / 4;
+      dice.rotYTarget = Math.PI / 4;
+      dice.face = "";
+    })
   }
 
   increaseForce() {
@@ -39,7 +72,7 @@ export default class DiceManager {
   }
 
   addSpecialAbilityDice(color="#777") {
-    this.addDice(specialAbilityDiceFaces, color)
+    this.addDice(DashDiceFaces, color)
   }
 
   draw(ctx) {
