@@ -4,7 +4,7 @@ import { setUpInputs, keys } from './inputs';
 import { Particles } from "./particles"
 import { Dice } from "./dice"
 import DiceManager from "./dice-manager"
-import { preloadImages, doneLoadingImgs, imgs } from "./load";
+import { preloadAssets, doneLoadingResrcs, imgs } from "./load";
 import { Player } from "./player";
 import { Camera } from "./camera.js";
 import { Spawner } from './spawner'
@@ -13,6 +13,7 @@ import { Enemy } from './enemy';
 import { RandomMovementAI, PatrolAI, TargettingAI } from './AI'
 import { CollisionManager } from "./collisions";
 
+export const audCtx = new AudioContext();
 const ctx = canvas.getContext("2d")
 canvas.width = SIZE
 canvas.height = SIZE
@@ -29,13 +30,13 @@ export const enemyBullets = [];
 
 function init() {
   ctx.lineWidth = LINEWIDTH;
-  preloadImages()
+  preloadAssets()
   setUpInputs()
   
   camera.setTarget(player)
   
   let loadImgInterval = setInterval(() => {
-    if (doneLoadingImgs()) {
+    if (doneLoadingResrcs()) {
       diceManager.addSpecialAbilityDice();
       diceManager.addStandardDice();
       diceManager.addStandardDice();

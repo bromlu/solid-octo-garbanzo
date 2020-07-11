@@ -1,7 +1,8 @@
 import { Dice } from "./dice";
 import { SIZE, randBell, bounded, lerp } from "./globals"
 import { keys } from "./inputs"
-import { player } from "./main"
+import { player } from "./main" 
+import { sounds } from "./load";
 
 const standardDiceFaces = ["1","2","3","4","5","6"]
 const specialAbilityDiceFaces = ["Dash","Dash","Dash","Dash"," ","??"]
@@ -31,7 +32,6 @@ export default class DiceManager {
 
   addDice(faces, color) {
     this.allDice.push(new Dice(faces, color));
-    
   }
 
   addStandardDice(color="#777") {
@@ -100,6 +100,8 @@ export default class DiceManager {
         if (dice.done) {
           numDone++;
           console.log("clunk")
+          sounds.clunk.currentTime = 0;
+          sounds.clunk.play();
         }
       }
       if (numDone == this.allDice.length) this.onRollFinished();
