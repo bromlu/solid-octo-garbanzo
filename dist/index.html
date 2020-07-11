@@ -4,11 +4,36 @@
   <title>Untitled Game</title>
   <link rel="stylesheet" href="index.css">
 </head>
+<script  id="vertex-shader-3d" type="x-shader/x-vertex">
+attribute vec4 a_position;
+
+uniform mat4 u_matrix;
+
+varying vec3 v_normal;
+
+void main() {
+  gl_Position = u_matrix * a_position;
+  v_normal = normalize(a_position.xyz);
+}
+</script>
+<!-- fragment shader -->
+<script  id="fragment-shader-3d" type="x-shader/x-fragment">
+precision mediump float;
+varying vec3 v_normal;
+uniform samplerCube u_texture;
+void main() {
+   gl_FragColor = textureCube(u_texture, normalize(v_normal));
+}
+</script>
+<script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
+<script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
 <body id="body">
-  <div id="menuDiv">
+  <!-- <div id="menuDiv">
     <button id="beginBtn">Begin</button>
     <button id="credBtn">Credits</button>
-  </div>
+  </div> -->
+  <canvas id="diceCanvas"></canvas>
+
   <div class="nodisplay" id="credDiv"><button id="credDivbtn" class="large">Back</button></div>
   <canvas id="canvas" class="nodisplay"></canvas>
 </body>

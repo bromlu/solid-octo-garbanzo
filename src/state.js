@@ -46,9 +46,9 @@ divDict[GameState.CRED] = getEl("credDiv")
 
 const body = getEl("body")
 function hideOuterDivs() {
-  for (let child of body.children) {
-    child.classList.add("nodisplay")
-  }
+  // for (let child of body.children) {
+  //   child.classList.add("nodisplay")
+  // }
 }
 
 const UPDATES_PER_SEC = 30;
