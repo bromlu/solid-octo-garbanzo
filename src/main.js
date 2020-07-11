@@ -1,6 +1,6 @@
 import GameState from "./state"
 import { SIZE, getEl, canvas, LINEWIDTH, MAPW } from "./globals"
-import { setUpInputs } from './inputs';
+import { setUpInputs, keys } from './inputs';
 import { Particles } from "./particles"
 import { Dice } from "./dice"
 import DiceManager from "./dice-manager"
@@ -82,5 +82,7 @@ function gameUpdate() {
   Particles.update()
   player.update();
   enemy.update();
+  diceManager.update();
+  
   camera.update();
 }

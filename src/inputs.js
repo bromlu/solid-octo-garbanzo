@@ -18,9 +18,6 @@ export function setUpInputs() {
         let k = e.keyCode
         if (keys[k] == true && k !== 32) return;
         keys[k] = true
-        if (k == 32) {
-            diceManager.increaseForce()
-        }
 
     })
     window.addEventListener("keyup", e => {
