@@ -1,4 +1,4 @@
-import { enemies, player, enemyBullets } from './main'
+import { enemies, player, enemyBullets, playerBullets } from './main'
 
 export class CollisionManager {
   constructor() {
@@ -6,7 +6,18 @@ export class CollisionManager {
   }
 
   update() {
-    // TODO player bullets
+    playerBullets.forEach(bullet => {
+      if (bullet.sinking || bullet.sunk) return;
+      enemies.forEach(enemy => {
+        let dx = Math.abs(bullet.x - enemy.x)
+        let dy = Math.abs(bullet.y - enemy.y)
+        if (dx < enemy.r && dy < enemy.r) {
+          bullet.sunk = true;
+          this.handleEnemyHurt(enemy);
+        }
+      });
+    });
+
     enemyBullets.forEach(bullet => {
       if (bullet.sinking || bullet.sunk) return;
       let dx = Math.abs(bullet.x - player.x)
@@ -21,7 +32,6 @@ export class CollisionManager {
       let dx = Math.abs(enemy.x - player.x)
       let dy = Math.abs(enemy.y - player.y)
       if (dx < player.r && dy < player.r) {
-        console.log(player.v);
         if (player.v > 10) {
           this.handleEnemyHurt()
         } else {
@@ -32,8 +42,8 @@ export class CollisionManager {
 
   }
 
-  handleEnemyHurt() {
-    console.log("Gotcha")
+  handleEnemyHurt(enemy) {
+    enemy.handleCollision()
   }
 
   handlePlayerHurt() {

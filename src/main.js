@@ -83,7 +83,7 @@ function gameDraw() {
   Particles.draw(ctx)
   player.draw(ctx);
   enemies.forEach(enemy => {
-    enemy.draw(ctx);
+    if (!enemy.sunk) enemy.draw(ctx);
   });
 
   enemyBullets.forEach(bullet => {
@@ -103,9 +103,11 @@ function gameUpdate() {
   Particles.update()
   player.update();
   spawner.update();
-  enemies.forEach(enemy => {
-    enemy.update();
-  });
+  for (let i = 0; i < enemies.length; i++) {
+    let enemy = enemies[i];
+    if (enemy.sunk) enemies.splice(i--, 1);
+    else enemy.update();
+  }
 
   for (let i = 0; i < enemyBullets.length; i++) {
     let bullet = enemyBullets[i];
