@@ -1,8 +1,10 @@
 import { Dice } from "./dice";
 import { SIZE, randBell, bounded, lerp } from "./globals"
 import { keys } from "./inputs"
+import { player } from "./main"
 
 const standardDiceFaces = ["1","2","3","4","5","6"]
+const specialAbilityDiceFaces = ["Dash","Dash","Dash","Dash"," ","??"]
 export default class DiceManager {
   constructor() {
     this.allDice = [];
@@ -36,6 +38,10 @@ export default class DiceManager {
     this.addDice(standardDiceFaces, color)
   }
 
+  addSpecialAbilityDice(color="#777") {
+    this.addDice(specialAbilityDiceFaces, color)
+  }
+
   draw(ctx) {
     // if (Date.now() - this.lastRoll > this.maxRollDuration) return; //maybe need this optimization later
     let n = this.allDice.length;
@@ -46,9 +52,14 @@ export default class DiceManager {
       let dice = this.allDice[i];
       dice.draw(ctx, x, y)
     }
+  }
 
-    let barH = (this.getBoundedForce() / this.maxForce) * 100
-    ctx.fillRect(10, SIZE-barH, 10, barH)
+  drawBar(ctx) {
+    if (this.force > 0) {
+      let barW = (this.getBoundedForce() / this.maxForce) * 100
+      ctx.strokeRect(player.x-50, player.y + 50, 100, 10)
+      ctx.fillRect(player.x-barW / 2, player.y + 50, barW, 10)
+    }
   }
 
   rollAll() {
@@ -60,9 +71,9 @@ export default class DiceManager {
     for (let i = 0; i < n; i++) {
       let dice = this.allDice[i];
       let targetIdx = Math.floor(Math.random() * 6)
-      dice.roll(targetIdx, randBell(this.rollDuration, .2), this.force);
+      dice.roll(targetIdx, randBell(this.rollDuration, .3), this.force);
       dice.done = false;
-      let face = dice.faces[targetIdx]; //TODO use me
+      dice.face = dice.faces[targetIdx]; //TODO use me
     }
     this.rolling = true;
     this.rollStart = Date.now();

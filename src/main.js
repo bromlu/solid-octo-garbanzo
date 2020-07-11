@@ -7,35 +7,38 @@ import DiceManager from "./dice-manager"
 import { preloadImages, doneLoadingImgs, imgs } from "./load";
 import { Player } from "./player";
 import { Camera } from "./camera.js";
+import { Spawner } from './spawner'
+
 import { Enemy } from './enemy';
 import { RandomMovementAI, PatrolAI, TargettingAI } from './AI'
+
 const ctx = canvas.getContext("2d")
 canvas.width = SIZE
 canvas.height = SIZE
 
 export const diceManager = new DiceManager()
-diceManager.addStandardDice();
-diceManager.addStandardDice();
-diceManager.addStandardDice();
-diceManager.addStandardDice();
 
-const player = new Player();
-window.camera = new Camera();
-
-/// TODO make spawner
-const enemy = new Enemy(120, 200, new PatrolAI(1000));
-const enemy2 = new Enemy(120, 200, new TargettingAI(player));
-const enemy3 = new Enemy(120, 200, new RandomMovementAI(1000));
+export const player = new Player();
+const spawner = new Spawner();
+export const camera = new Camera();
+window.camera = camera;
+export const enemies = [];
+export const enemyBullets = [];
 
 function init() {
   ctx.lineWidth = LINEWIDTH;
   preloadImages()
   setUpInputs()
-
+  
   camera.setTarget(player)
-
+  
   let loadImgInterval = setInterval(() => {
     if (doneLoadingImgs()) {
+      diceManager.addSpecialAbilityDice();
+      diceManager.addStandardDice();
+      diceManager.addStandardDice();
+      diceManager.addStandardDice();
+      diceManager.addStandardDice();
       console.log(imgs)
       clearInterval(loadImgInterval);
       startGame()
@@ -51,6 +54,8 @@ init();
 
 function startGame() {
   gameState.setState(GameState.GAME, gameUpdate, gameDraw)
+  spawner.addLevel1Spawns()
+  // spawner.addEnemy(new Enemy(0, -400, new RandomMovementAI(1000)))
 
   // dice.roll(Math.floor(Math.random() * 6), 2000)
   // dice2.roll(Math.floor(Math.random() * 6), 1500)
@@ -74,12 +79,15 @@ function gameDraw() {
 
   Particles.draw(ctx)
   player.draw(ctx);
-  enemy.draw(ctx)
-  enemy2.draw(ctx)
-  enemy3.draw(ctx)
-  // ctx.fillRect(player.x, player.y, 10, 10)
-  ctx.fillRect(enemy.x, enemy.y, 10, 10)
-  
+  enemies.forEach(enemy => {
+    enemy.draw(ctx);
+  });
+
+  enemyBullets.forEach(bullet => {
+    if (!bullet.sunk) bullet.draw(ctx);
+  });
+
+  diceManager.drawBar(ctx);
   // ctx.restore();
   ctx.resetTransform();
   diceManager.draw(ctx)
@@ -88,9 +96,17 @@ function gameDraw() {
 function gameUpdate() {
   Particles.update()
   player.update();
-  enemy.update();
-  enemy2.update();
-  enemy3.update();
+  spawner.update();
+  enemies.forEach(enemy => {
+    enemy.update();
+  });
+
+  for (let i = 0; i < enemyBullets.length; i++) {
+    let bullet = enemyBullets[i];
+    if (bullet.sunk) enemyBullets.splice(i--, 1);
+    else bullet.update();
+  }
+
   diceManager.update();
   
   camera.update();

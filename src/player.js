@@ -1,6 +1,8 @@
 import { TAU, SIZE, bounded } from "./globals";
 import { imgs } from "./load"
-import { keys, UP, LEFT, RIGHT } from "./inputs"
+import { keys, UP, LEFT, RIGHT, SPACE } from "./inputs"
+import {diceManager } from "./main";
+
 export class Player {
   constructor() { 
     this.x = 100; // middle of player (right pixel)
@@ -19,6 +21,10 @@ export class Player {
     this.frictionTheta = .8
 
     this.hurtTimer = 0;
+
+
+    this.specialPower = 0
+    this.maxSpecialPower = 100
   }
 
   draw(ctx) {
@@ -33,7 +39,23 @@ export class Player {
     ctx.restore();
   }
 
+  getBoundedSpecialPower() {
+    let dir = (Math.floor(this.specialPower / this.maxSpecialPower) % 2);
+    let f = this.specialPower % this.maxSpecialPower
+    return dir == 0 ? f : this.maxSpecialPower - f;
+  }
+
   update() {
+    if (!diceManager.rolling) {
+      if (keys[SPACE]) {
+        this.specialPower += 1
+      } else if (this.specialPower > 0) {
+        this.fireSpecial(this.getBoundedSpecialPower())
+        diceManager.rollAll();
+        this.specialPower = 0
+      }
+    }
+
     this.v *= this.friction;
     this.vTheta *= this.frictionTheta;
     if (Math.abs(this.v) < .01) this.v = 0;
@@ -57,8 +79,12 @@ export class Player {
     this.y -= this.v * Math.cos(this.theta);
 
     this.x = bounded(-SIZE, this.x, SIZE);
-
-
   }
 
+  fireSpecial(specialPower) {
+    console.log(diceManager.allDice[0].face)
+    if (diceManager.allDice[0].face == "Dash") {
+      this.v = specialPower
+    }
+  }
 }

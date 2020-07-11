@@ -1,11 +1,15 @@
 import { imgs } from "./load"
+import { enemyBullets } from "./main";
+import { Bullet } from "./bullet";
+import { SIZE, bounded} from "./globals";
 
 export class Enemy {
-    constructor(x, y, AI) {
+    constructor(x, y, AI, sprite) {
         this.x = x;
         this.y = y;
         this.theta = 0;
         this.AI = AI
+        this.sprite = sprite;
 
         this.r = 32;
         this.a = 0;
@@ -18,6 +22,13 @@ export class Enemy {
         
         this.friction = .9
         this.frictionTheta = .8
+
+        this.reloadTime = 1000;
+        this.lastShot = 0;
+        this.numBullets = 5;
+        this.bulletV = 30;
+
+        this.health = 100;
     }
 
     update() {
@@ -43,6 +54,34 @@ export class Enemy {
       this.theta += this.vTheta;
       this.x += this.v * Math.sin(this.theta);
       this.y -= this.v * Math.cos(this.theta);
+      this.x = bounded(-SIZE, this.x, SIZE);
+
+      let now = Date.now();
+
+      if (this.AI.useShot(this) && now > this.lastShot + this.reloadTime) {
+        let useRight = this.AI.useRightSide;
+        let n = this.numBullets;
+        if (useRight) {
+          let spread = Math.PI/2;
+          for (let i = 0; i < n; i++)
+          {
+            let dir = this.theta + Math.PI/2 - spread/2 + ((i+1) * (spread / (n+2)))
+            // let dir = this.theta + Math.PI/2;
+            let xv = Math.sin(dir) * this.bulletV;
+            let yv = -Math.cos(dir) * this.bulletV;
+            enemyBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
+          }
+        } else {
+          let dir = this.theta - Math.PI/2;
+          let xv = Math.sin(dir) * this.bulletV;
+          let yv = -Math.cos(dir) * this.bulletV;
+          for (let i = 0; i < n; i++)
+          {
+            enemyBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
+          }
+        }
+        this.lastShot = now;
+      }
     }
 
     draw(ctx) {
@@ -50,9 +89,9 @@ export class Enemy {
 
         ctx.translate(this.x, this.y);
         ctx.rotate(this.theta);
-        let left = -imgs.enemy.width / 2;
-        let top = -imgs.enemy.height / 2;
-        ctx.drawImage(imgs.enemy, left, top)
+        let left = -this.sprite.width / 2;
+        let top = -this.sprite.height / 2;
+        ctx.drawImage(this.sprite, left, top)
 
         ctx.restore();
 

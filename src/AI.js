@@ -3,22 +3,26 @@ import {TAU} from "./globals";
 const actions = {
     forward: 0,
     left: 1,
-    right: 2
+    right: 2,
+    nothing: 3
 }
 export class RandomMovementAI {
     constructor(actionDuration) {
-        this.actionDuration = actionDuration
+        this.actionDurationMax = actionDuration
+        this.actionDuration = Math.random() * this.actionDurationMax
         this.actionStart = Date.now()
-        this.action = Math.floor(Math.random() * 3)
+        this.action = Math.floor(Math.random() * 4)
     }
 
     goForward() { return this.action === actions.forward; }
     goLeft() { return this.action === actions.left }
     goRight() { return this.action === actions.right }
-    update() {
+    useShot() { return false }
+    update(body) {
         if (Date.now() - this.actionStart > this.actionDuration) {
-            this.action = Math.floor(Math.random() * 3)
+            this.action = Math.floor(Math.random() * 4)
             this.actionStart = Date.now();
+            this.actionDuration = Math.random() * this.actionDurationMax
         }
     }
 }
@@ -60,6 +64,7 @@ export class PatrolAI {
         }
         return false;
     }
+    useShot() { return false; }
 }
 
 const states = {
@@ -69,23 +74,31 @@ const states = {
 export class TargettingAI {
     constructor(target) {
         this.target = target;
+        this.xOffset = Math.floor(Math.random() * 100) - 50; 
+        this.yOffset = Math.floor(Math.random() * 100) - 50; 
         this.forward = false;
         this.left = false;
         this.right = false;
         this.state = states.tracking;
         this.shotDistance = 300;
         this.useRightSide = false;
+        this.shoot = false;
     }
     goForward() { return this.forward; }
     goLeft() { return this.left }
     goRight() { return this.right }
+    useShot() { return this.shoot }
     update(body) {
         let dx = body.x - this.target.x
         let dy = body.y - this.target.y
         this.left = false;
         this.right = false;
+        this.shoot = false;
+        this.forward = false;
         if (this.state == states.tracking) {
             //turn to target
+            dx += this.xOffset
+            dy += this.yOffset
             this.forward = true;
             let desiredTheta = Math.atan2(dy,dx);
             let d1 = thetaDiff(body.theta, desiredTheta)
@@ -105,13 +118,10 @@ export class TargettingAI {
             }
         }
         else if (this.state == states.targetting) {
-            this.forward = false;
-
             let desiredTheta = Math.atan2(dy,dx);
             let d1 = thetaDiff(body.theta + Math.PI/2, desiredTheta)
             let d2 = thetaDiff(body.theta - Math.PI/2, desiredTheta)
-            console.log(this.useRightSide)
-            let close = Math.abs(Math.abs(d1) - Math.abs(d2)) < .5;
+            let close = Math.abs(Math.abs(d1) - Math.abs(d2)) < .3;
             if (!close) {
                 if (Math.abs(d1) < Math.abs(d2)) {
                     if (this.useRightSide) this.left = true;
@@ -120,6 +130,8 @@ export class TargettingAI {
                     if (this.useRightSide) this.right = true;
                     else this.left = true;
                 }
+            } else {
+                this.shoot = true;
             }
 
             dx = Math.abs(dx);

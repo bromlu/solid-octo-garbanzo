@@ -1,3 +1,5 @@
+import { imgs } from "./load";
+
 const faceCoords = [
   { x: 0, y: Math.PI / -2},
   { x: 0, y: Math.PI / 2 },
@@ -9,6 +11,7 @@ const faceCoords = [
 
 export class Dice {
   constructor(faces, color) {
+    this.face = 0;
     this.faces = faces;
     this.done = true; //externally controlled
     this.canvas = document.createElement("canvas");
@@ -71,8 +74,8 @@ export class Dice {
     this.rotX = degToRad(0);
     this.rotY = degToRad(0);
 
-    this.rotXTarget = faceCoords[0].x;
-    this.rotYTarget = faceCoords[0].y;
+    this.rotXTarget = Math.PI / 4;
+    this.rotYTarget = Math.PI / 4;
     this.rotXVel = .001;
     this.rotYVel = .001;
     this.rollStopTime = 0
@@ -186,14 +189,19 @@ function degToRad(d) {
 }
 
 function generateFace(ctx, faceColor, textColor, text) {
-  const {width, height} = ctx.canvas;
   ctx.fillStyle = faceColor;
+  const {width, height} = ctx.canvas;
   ctx.fillRect(0, 0, width, height);
-  ctx.font = `${width * 0.7}px sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle = textColor;
-  ctx.fillText(text, width / 2, height / 2);
+  if (text === "Dash") {
+    ctx.drawImage(imgs.dash, 0, 0, width, height);
+  } else {
+    ctx.font = `${width * 0.7}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = textColor;
+    ctx.fillText(text, width / 2, height / 2);
+  }
+
 }
 
 // Fill the buffer with the values that define a cube.
