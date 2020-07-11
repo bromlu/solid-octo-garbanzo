@@ -6,6 +6,7 @@ const imgSources = {
   enemy: "/assets/enemy.png",
   dash: "/assets/dash.png",
   island: "/assets/island.png",
+  manta: "/assets/Manta_Ray.png",
 }
 
 const audioSources = {

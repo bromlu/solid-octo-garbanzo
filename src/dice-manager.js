@@ -1,13 +1,16 @@
 import { Dice } from "./dice";
 import { SIZE, randBell, bounded, lerp, getEl } from "./globals"
 import { keys } from "./inputs"
-import { player } from "./main" 
+import { player } from "./main"
 import { sounds } from "./load";
 
-const standardDiceFaces = ["1","2","3","4","5","6"]
-const specialAbilityDiceFaces = ["Dash","Fire","Fire","Dash","Fire","Fire"]
-const DashDiceFaces = ["Dash","Dash","Dash","Dash","Dash","Dash"]
-const FireDiceFaces = ["Dash","Fire","Fire","Dash","Fire","Fire"]
+const controlModifierDiceFaces = ["1", "2", "0", "-1", "-2", "0"]
+const abilityDiceFaces = [" ", "Dash", "Fire"]
+
+const standardDiceFaces = ["1", "2", "0", "-1", "-2", "0"]
+const specialAbilityDiceFaces = ["Dash", "Fire", "Fire", "Dash", "Fire", "Fire"]
+const DashDiceFaces = ["Dash", "Dash", "Dash", "Dash", "Dash", "Dash"]
+const FireDiceFaces = ["Dash", "Fire", "Fire", "Dash", "Fire", "Fire"]
 export default class DiceManager {
   constructor() {
     this.allDice = [];
@@ -22,11 +25,26 @@ export default class DiceManager {
   }
 
   reRollControlModifiers() {
+    for(let controlDiceIndex = 1; controlDiceIndex < 5; controlDiceIndex++) {
+      let faces = [];
+      for (let i = 0; i < 6; i++) {
+        let newFaceIdx = Math.floor(Math.random() * controlModifierDiceFaces.length)
+        faces.push(controlModifierDiceFaces[newFaceIdx])
+      }
+      this.allDice.splice(controlDiceIndex, 1, new Dice(faces, "#777"));
+    }
     this.setDiceFacesInHtml()
   }
 
   reRollAbilities() {
-   this.setDiceFacesInHtml()
+    let faces = [];
+    for (let i = 0; i < 6; i++) {
+      let newFaceIdx = Math.floor(Math.random() * abilityDiceFaces.length)
+      faces.push(abilityDiceFaces[newFaceIdx])
+    }
+    this.allDice.splice(0, 1);
+    this.allDice.unshift(new Dice(faces, "#777"))
+    this.setDiceFacesInHtml()
   }
 
   setDiceFacesInHtml() {
@@ -67,11 +85,11 @@ export default class DiceManager {
     this.allDice.push(new Dice(faces, color));
   }
 
-  addStandardDice(color="#777") {
+  addStandardDice(color = "#777") {
     this.addDice(standardDiceFaces, color)
   }
 
-  addSpecialAbilityDice(color="#777") {
+  addSpecialAbilityDice(color = "#777") {
     this.addDice(DashDiceFaces, color)
   }
 
@@ -81,7 +99,7 @@ export default class DiceManager {
     let width = .9 * SIZE;
     for (let i = 0; i < n; i++) {
       let y = .9 * SIZE;
-      let x = SIZE/2 - width/2 + (i+1)*(width/(n+1));
+      let x = SIZE / 2 - width / 2 + (i + 1) * (width / (n + 1));
       let dice = this.allDice[i];
       dice.draw(ctx, x, y)
     }
@@ -89,9 +107,11 @@ export default class DiceManager {
 
   drawBar(ctx) {
     if (this.force > 0) {
+      ctx.fillStyle = "red"
+      ctx.strokeStyle = "#555"
       let barW = (this.getBoundedForce() / this.maxForce) * 100
-      ctx.strokeRect(player.x-50, player.y + 50, 100, 10)
-      ctx.fillRect(player.x-barW / 2, player.y + 50, barW, 10)
+      ctx.strokeRect(player.x - 50, player.y + 50, 100, 10)
+      ctx.fillRect(player.x - barW / 2, player.y + 50, barW, 10)
     }
   }
 
@@ -140,7 +160,7 @@ export default class DiceManager {
       if (numDone == this.allDice.length) this.onRollFinished();
     } else {
 
-      if (keys[32])  this.increaseForce()
+      if (keys[32]) this.increaseForce()
 
     }
   }

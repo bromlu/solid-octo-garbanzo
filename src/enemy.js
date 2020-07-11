@@ -2,6 +2,7 @@ import { imgs } from "./load"
 import { enemyBullets } from "./main";
 import { Bullet } from "./bullet";
 import { SIZE, bounded} from "./globals";
+import Animation, { mantaRayFrames } from "./animation";
 
 export class Enemy {
     constructor(x, y, AI, sprite) {
@@ -30,6 +31,9 @@ export class Enemy {
 
         this.health = 100;
         this.sunk = false;
+
+        let frameSelector = Animation.getLoopingFrameSelector(1000, mantaRayFrames.length)
+        this.animation = new Animation(imgs.manta, mantaRayFrames, frameSelector)
     }
 
     update() {
@@ -93,6 +97,8 @@ export class Enemy {
         let left = -this.sprite.width / 2;
         let top = -this.sprite.height / 2;
         ctx.drawImage(this.sprite, left, top)
+
+        this.animation.draw(ctx, 0, 0, false, .5);
 
         ctx.restore();
 

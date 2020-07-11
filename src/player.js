@@ -30,10 +30,10 @@ export class Player {
   draw(ctx) {
     ctx.save();
 
-    ctx.beginPath()
-    ctx.arc(this.x, this.y, this.r, 0, TAU);
-    ctx.closePath()
-    ctx.fill();
+    // ctx.beginPath()
+    // ctx.arc(this.x, this.y, this.r, 0, TAU);
+    // ctx.closePath()
+    // ctx.fill();
 
 
     ctx.translate(this.x, this.y);
