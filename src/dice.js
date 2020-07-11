@@ -8,12 +8,11 @@ const faceCoords = [
 ]
 
 export class Dice {
-  constructor(faces) {
+  constructor(faces, color) {
+    this.faces = faces;
     this.canvas = document.createElement("canvas");
     document.body.appendChild(this.canvas)
-    this.canvas.style.visibility = "hidden"
-    this.canvas.height = 100;
-    this.canvas.width = 100;
+    this.canvas.classList.add("gone")
     var gl = this.canvas.getContext("webgl");
     this.gl = gl;
     if (!gl) {
@@ -46,12 +45,12 @@ export class Dice {
     ctx.canvas.height = 128;
 
     const faceInfos = [
-      { target: gl.TEXTURE_CUBE_MAP_POSITIVE_X, faceColor: '#F00', textColor: '#0FF', text: faces[0] },
-      { target: gl.TEXTURE_CUBE_MAP_NEGATIVE_X, faceColor: '#FF0', textColor: '#00F', text: faces[1] },
-      { target: gl.TEXTURE_CUBE_MAP_POSITIVE_Y, faceColor: '#0F0', textColor: '#F0F', text: faces[2] },
-      { target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, faceColor: '#0FF', textColor: '#F00', text: faces[3] },
-      { target: gl.TEXTURE_CUBE_MAP_POSITIVE_Z, faceColor: '#00F', textColor: '#FF0', text: faces[4] },
-      { target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, faceColor: '#F0F', textColor: '#0F0', text: faces[5] },
+      { target: gl.TEXTURE_CUBE_MAP_POSITIVE_X, faceColor: color, textColor: '#0FF', text: faces[0] },
+      { target: gl.TEXTURE_CUBE_MAP_NEGATIVE_X, faceColor: color, textColor: '#00F', text: faces[1] },
+      { target: gl.TEXTURE_CUBE_MAP_POSITIVE_Y, faceColor: color, textColor: '#F0F', text: faces[2] },
+      { target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, faceColor: color, textColor: '#F00', text: faces[3] },
+      { target: gl.TEXTURE_CUBE_MAP_POSITIVE_Z, faceColor: color, textColor: '#FF0', text: faces[4] },
+      { target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, faceColor: color, textColor: '#0F0', text: faces[5] },
     ];
     faceInfos.forEach((faceInfo) => {
       const {target, faceColor, textColor, text} = faceInfo;
@@ -71,8 +70,8 @@ export class Dice {
     this.rotX = degToRad(0);
     this.rotY = degToRad(0);
 
-    this.rotXTarget = degToRad(0);
-    this.rotYTarget = degToRad(0);
+    this.rotXTarget = faceCoords[0].x;
+    this.rotYTarget = faceCoords[0].y;
     this.rotXVel = .001;
     this.rotYVel = .001;
     this.rollStopTime = 0
@@ -162,9 +161,9 @@ export class Dice {
   
   }
 
-  roll(target, duration) {
-    this.rotXTarget = faceCoords[target].x + Math.random() * .5 - .25
-    this.rotYTarget = faceCoords[target].y + Math.random() * .5 - .25
+  roll(targetIdx, duration) {
+    this.rotXTarget = faceCoords[targetIdx].x + Math.random() * .5 - .25
+    this.rotYTarget = faceCoords[targetIdx].y + Math.random() * .5 - .25
     this.rollStopTime = Date.now() + duration;
 
     this.rotXVel = Math.random() * .005 + .005;
