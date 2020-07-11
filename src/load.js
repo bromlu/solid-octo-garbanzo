@@ -7,6 +7,7 @@ const imgSources = {
   dash: "/assets/dash.png",
   island: "/assets/island.png",
   manta: "/assets/Manta_Ray.png",
+  boat: "/assets/Boat_Movement.png",
 }
 
 const audioSources = {

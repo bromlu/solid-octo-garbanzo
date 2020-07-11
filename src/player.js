@@ -3,6 +3,8 @@ import { imgs } from "./load"
 import { keys, UP, LEFT, RIGHT, SPACE } from "./inputs"
 import { diceManager, playerBullets } from "./main";
 import { Bullet } from "./bullet";
+import Animation, { mantaRayFrames } from "./animation";
+
 
 export class Player {
   constructor() {
@@ -25,33 +27,43 @@ export class Player {
 
     this.chargingSpecial = false;
     this.bulletV = 30;
+
+    // this.stillAnimation = new Animation(imgs.boat, playerShipFrames, Animation.getLoopingFrameSelector(500, 2));
+
+    // let frameSelector = Animation.getLoopingFrameSelector(500, 2)
+    // this.moveAnimation = new Animation(imgs.boat, playerShipFrames, frameSelector)
+    
+    // this.turnAnimation = new Animation(imgs.boat, playerShipFrames, t => 2)
+
+    let frameSelector = Animation.getLoopingFrameSelector(1000, mantaRayFrames.length)
+    this.animation = new Animation(imgs.manta, mantaRayFrames, frameSelector)
+
+    this.control = 10;
   }
 
   draw(ctx) {
     ctx.save();
 
-    // ctx.beginPath()
-    // ctx.arc(this.x, this.y, this.r, 0, TAU);
-    // ctx.closePath()
-    // ctx.fill();
-
-
     ctx.translate(this.x, this.y);
     ctx.rotate(this.theta);
-    let left = - imgs.player.width / 2;
-    let top = - imgs.player.height / 2
-    ctx.drawImage(imgs.player, left, top)
-
+    
+    ctx.beginPath()
+    ctx.arc(0, 0, this.r, 0, TAU);
+    ctx.closePath()
+    ctx.fill();
+    // console.log(this.animation);
+    this.animation.draw(ctx, 0, 0, false, .4);
     ctx.restore();
   }
 
   update() {
     if (!diceManager.rolling) {
-      if (keys[SPACE]) {
+      if (keys[SPACE] && this.control > 5) {
         this.chargingSpecial = true;
       } else if (this.chargingSpecial) {
         this.fireSpecial(diceManager.getBoundedForce())
         diceManager.rollAll();
+        this.updateControl();
         this.chargingSpecial = false
       }
     }
@@ -61,14 +73,14 @@ export class Player {
     if (Math.abs(this.v) < .01) this.v = 0;
     if (Math.abs(this.vTheta) < .01) this.vTheta = 0;
 
-    if (keys[UP]) {
+    if (keys[UP] && this.control > -5) {
       this.a = this.force;
     } else this.a = 0;
     this.v += this.a;
 
-    if (keys[LEFT]) {
+    if (keys[LEFT] && this.control > 3) {
       this.aTheta = -this.forceTheta;
-    } else if (keys[RIGHT]) {
+    } else if (keys[RIGHT] && this.control > -3) {
       this.aTheta = this.forceTheta;
     } else this.aTheta = 0;
     this.vTheta += this.aTheta;
@@ -107,11 +119,22 @@ export class Player {
     if (!diceManager.rolling) {
       diceManager.force = 0;
       diceManager.rollAll();
+      this.updateControl();
     }
     // else take damage?
   }
 
   isDashing() {
-    return this.v > 10
+    return this.v > 15
+  }
+
+  updateControl() {
+    this.control += 
+      parseInt(diceManager.allDice[1].face) +
+      parseInt(diceManager.allDice[2].face) +
+      parseInt(diceManager.allDice[3].face) +
+      parseInt(diceManager.allDice[4].face);
+    console.log(this.control)
+    this.control = 100
   }
 }

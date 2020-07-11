@@ -22,6 +22,8 @@ export const diceManager = new DiceManager()
 const collisionManager = new CollisionManager()
 
 export const player = new Player();
+window.player = player;
+console.log(player)
 const spawner = new Spawner();
 export const camera = new Camera();
 window.camera = camera;
@@ -92,10 +94,11 @@ export function gameDraw() {
 
 
   Particles.draw(ctx)
-  player.draw(ctx);
   enemies.forEach(enemy => {
     if (!enemy.sunk) enemy.draw(ctx);
   });
+  player.draw(ctx);
+  player.animation.draw(ctx, 0, 0, false, .4);
 
   enemyBullets.forEach(bullet => {
     if (!bullet.sunk) bullet.draw(ctx);
@@ -107,6 +110,8 @@ export function gameDraw() {
   // ctx.restore();
   ctx.resetTransform();
   diceManager.draw(ctx)
+  // enemies[0].animation.draw(ctx,0,0,false, 1)
+  player.animation.draw(ctx,0,0,false, 1)
 }
 
 export function gameUpdate() {
@@ -152,5 +157,4 @@ export function resetLevel() {
   enemies.length = 0
   diceManager.resetDice();
   console.log(enemies)
-  
 }

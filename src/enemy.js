@@ -1,7 +1,7 @@
 import { imgs } from "./load"
 import { enemyBullets } from "./main";
 import { Bullet } from "./bullet";
-import { SIZE, bounded} from "./globals";
+import { SIZE, bounded, TAU} from "./globals";
 import Animation, { mantaRayFrames } from "./animation";
 
 export class Enemy {
@@ -94,11 +94,16 @@ export class Enemy {
 
         ctx.translate(this.x, this.y);
         ctx.rotate(this.theta);
-        let left = -this.sprite.width / 2;
-        let top = -this.sprite.height / 2;
-        ctx.drawImage(this.sprite, left, top)
+        // let left = -this.sprite.width / 2;
+        // let top = -this.sprite.height / 2;
+        // ctx.drawImage(this.sprite, left, top)
 
-        this.animation.draw(ctx, 0, 0, false, .5);
+        // ctx.beginPath()
+        // ctx.arc(0, 0, this.r, 0, TAU);
+        // ctx.closePath()
+        // ctx.fill();
+
+        // this.animation.draw(ctx, 0, 0, false, .4);
 
         ctx.restore();
 

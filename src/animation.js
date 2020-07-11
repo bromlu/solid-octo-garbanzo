@@ -81,7 +81,7 @@ export const mantaRayFrames = [
   {"x":4410,"y":509,"w":328,"h":342,"ax":4554,"ay":617},
 ]
 
-export const playerShip = [
+export const playerShipFrames = [
   {"x":37,"y":24,"w":123,"h":260,"ax":91,"ay":126},
   {"x":187,"y":23,"w":125,"h":256,"ax":244,"ay":122},
   {"x":425,"y":22,"w":185,"h":247,"ax":544,"ay":132},
