@@ -33,7 +33,7 @@ export class CollisionManager {
       let dy = Math.abs(enemy.y - player.y)
       if (dx < player.r && dy < player.r) {
         if (player.v > 10) {
-          this.handleEnemyHurt()
+          this.handleEnemyHurt(enemy)
         } else {
           this.handlePlayerHurt();
         }
