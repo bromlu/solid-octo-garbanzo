@@ -1,21 +1,32 @@
 
 export let loaded = 0;
-const sources = {
+const imgSources = {
   player: "/assets/player.png",
   map: "/assets/ocean.png",
   enemy: "/assets/enemy.png",
   dash: "/assets/dash.png"
 }
-export const imgs = {}
 
-export function preloadImages() {
-  for (let key in sources) {
+const audioSources = {
+  clunk: "/assets/clunk.mp3",
+}
+export const imgs = {}
+export const sounds = {}
+
+export function preloadAssets() {
+  for (let key in imgSources) {
     imgs[key] = new Image()
-    imgs[key].src = sources[key]
-    imgs[key].onload = onImageLoad
+    imgs[key].src = imgSources[key]
+    imgs[key].onload = onResrcLoad
+  }
+
+  for (let key in audioSources) {
+    sounds[key] = new Audio(audioSources[key])
+    sounds[key].oncanplay = onResrcLoad
   }
 }
+window.sounds = sounds;
 
-export const doneLoadingImgs = () => loaded == Object.keys(sources).length
+export const doneLoadingResrcs = () => loaded == Object.keys(imgSources).length + Object.keys(audioSources).length
 
-const onImageLoad = () => {loaded++}
+const onResrcLoad = () => {loaded++; console.log("loaded")}
