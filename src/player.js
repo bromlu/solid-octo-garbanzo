@@ -1,9 +1,9 @@
 import { TAU, SIZE, bounded } from "./globals";
 import { imgs } from "./load"
 import { keys, UP, LEFT, RIGHT, SPACE } from "./inputs"
-import { diceManager, playerBullets } from "./main";
+import { diceManager, playerBullets, enemies } from "./main";
 import { Bullet } from "./bullet";
-import Animation, { mantaRayFrames } from "./animation";
+import Animation, { playerShipFrames } from "./animation";
 
 
 export class Player {
@@ -28,17 +28,17 @@ export class Player {
     this.chargingSpecial = false;
     this.bulletV = 30;
 
-    // this.stillAnimation = new Animation(imgs.boat, playerShipFrames, Animation.getLoopingFrameSelector(500, 2));
-
-    // let frameSelector = Animation.getLoopingFrameSelector(500, 2)
-    // this.moveAnimation = new Animation(imgs.boat, playerShipFrames, frameSelector)
     
-    // this.turnAnimation = new Animation(imgs.boat, playerShipFrames, t => 2)
-
-    let frameSelector = Animation.getLoopingFrameSelector(1000, mantaRayFrames.length)
-    this.animation = new Animation(imgs.manta, mantaRayFrames, frameSelector)
 
     this.control = 10;
+  }
+
+  setAnimations() {
+    let frameSelector = Animation.getLoopingFrameSelector(1000, 2)
+    this.moveAnimation = new Animation(imgs.boat, playerShipFrames, frameSelector)
+
+    this.stillAnimation = new Animation(imgs.boat, playerShipFrames, t => 0)
+    this.turnAnimation = new Animation(imgs.boat, playerShipFrames, t => 2)
   }
 
   draw(ctx) {
@@ -46,15 +46,24 @@ export class Player {
 
     ctx.translate(this.x, this.y);
     ctx.rotate(this.theta);
-    
-    ctx.beginPath()
-    ctx.arc(0, 0, this.r, 0, TAU);
-    ctx.closePath()
-    ctx.fill();
-    // console.log(this.animation);
-    this.animation.draw(ctx, 0, 0, false, .4);
+
+    // ctx.beginPath()
+    // ctx.arc(0, 0, this.r, 0, TAU);
+    // ctx.closePath()
+    // ctx.fill();
+
+    if (this.v > 2) {
+      this.moveAnimation.draw(ctx, 0, 0, false, .4);
+    } else if (this.vTheta > .05) { 
+      this.turnAnimation.draw(ctx, 0, 0, true, .4);
+    } else if (this.vTheta < -.05) { 
+      this.turnAnimation.draw(ctx, 0, 0, false, .4);
+    } else {
+      this.stillAnimation.draw(ctx, 0, 0, false, .4);
+    }
+
     ctx.restore();
-  }
+}
 
   update() {
     if (!diceManager.rolling) {

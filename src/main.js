@@ -23,11 +23,11 @@ const collisionManager = new CollisionManager()
 
 export const player = new Player();
 window.player = player;
-console.log(player)
 const spawner = new Spawner();
 export const camera = new Camera();
 window.camera = camera;
 export const enemies = [];
+window.enemies = enemies;
 export const enemyBullets = [];
 export const playerBullets = [];
 export const island = new Island();
@@ -42,6 +42,7 @@ function init() {
   
   let loadImgInterval = setInterval(() => {
     if (doneLoadingResrcs()) {
+      player.setAnimations();
       diceManager.addSpecialAbilityDice();
       diceManager.addStandardDice();
       diceManager.addStandardDice();
@@ -98,7 +99,6 @@ export function gameDraw() {
     if (!enemy.sunk) enemy.draw(ctx);
   });
   player.draw(ctx);
-  player.animation.draw(ctx, 0, 0, false, .4);
 
   enemyBullets.forEach(bullet => {
     if (!bullet.sunk) bullet.draw(ctx);
@@ -110,8 +110,6 @@ export function gameDraw() {
   // ctx.restore();
   ctx.resetTransform();
   diceManager.draw(ctx)
-  // enemies[0].animation.draw(ctx,0,0,false, 1)
-  player.animation.draw(ctx,0,0,false, 1)
 }
 
 export function gameUpdate() {

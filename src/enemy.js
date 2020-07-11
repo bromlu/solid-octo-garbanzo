@@ -94,16 +94,12 @@ export class Enemy {
 
         ctx.translate(this.x, this.y);
         ctx.rotate(this.theta);
-        // let left = -this.sprite.width / 2;
-        // let top = -this.sprite.height / 2;
-        // ctx.drawImage(this.sprite, left, top)
-
         // ctx.beginPath()
         // ctx.arc(0, 0, this.r, 0, TAU);
         // ctx.closePath()
         // ctx.fill();
 
-        // this.animation.draw(ctx, 0, 0, false, .4);
+        this.animation.draw(ctx, 0, 0, false, .4);
 
         ctx.restore();
 
