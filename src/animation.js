@@ -130,7 +130,7 @@ export const enemyShootingFrames = [
   {"x":204,"y":4,"w":174,"h":349,"ax":288,"ay":130},
 ]
 
-export const sheild = [
-  {"x":4,"y":7,"w":232,"h":218,"ax":119,"ay":183},
-  {"x":244,"y":6,"w":242,"h":215,"ax":363,"ay":187},
+export const shieldFrames = [
+  {"x":4,"y":7,"w":232,"h":218,"ax":119-5,"ay":183-70},
+  {"x":244,"y":6,"w":242,"h":215,"ax":363-5,"ay":187-70},
 ]

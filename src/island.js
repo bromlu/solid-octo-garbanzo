@@ -21,10 +21,10 @@ export class Island {
   }
 }
 
-getEl("reRollControlModifiers").addEventListener("click", () => {
-    diceManager.reRollControlModifiers()
-})
+// getEl("reRollControlModifiers").addEventListener("click", () => {
+//     diceManager.reRollControlModifiers()
+// })
 
-getEl("reRollAbilities").addEventListener("click", () => {
-    diceManager.reRollAbilities()
-})
+// getEl("reRollAbilities").addEventListener("click", () => {
+//     diceManager.reRollAbilities()
+// })

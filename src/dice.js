@@ -102,11 +102,11 @@ export class Dice {
     return dx*dx + dy*dy < 50*50;
   }
 
-  draw(ctx) {
+  draw(ctx, x=this.x, y=this.y) {
     this.drawScene()
     this.canvas.height = 100;
     this.canvas.width = 100;
-    ctx.drawImage(this.gl.canvas, this.x-50, this.y-50, 100, 100)
+    ctx.drawImage(this.gl.canvas, x-50, y-50, 100, 100)
   }
 
   drawScene() {

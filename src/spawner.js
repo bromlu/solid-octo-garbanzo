@@ -20,7 +20,7 @@ export class Spawner {
     let nextEnemy = this.enemiesToSpawn[this.enemiesToSpawn.length - 1];
     if (!nextEnemy) return;
     if (camera.yAnchor - 100 <= nextEnemy.y) {
-      console.log(camera.yAnchor, nextEnemy)
+      // console.log(camera.yAnchor, nextEnemy)
       enemies.push(this.enemiesToSpawn.pop());
     }
   }
@@ -57,6 +57,7 @@ export class Spawner {
       new Obstacles(100, -200, enemyTypes.kraken),
       new Obstacles(-100, -200, enemyTypes.kraken),
       new Obstacles(300, -300, enemyTypes.rock),
+      new Obstacles(-200, -300, enemyTypes.seaweed),
     ]
   }
   

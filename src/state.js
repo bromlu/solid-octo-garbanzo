@@ -48,7 +48,7 @@ divDict[GameState.CRED] = getEl("credDiv")
 
 
 const body = getEl("body")
-function hideOuterDivs() {
+export function hideOuterDivs() {
   divDict[GameState.GAME].classList.add("nodisplay")
   divDict[GameState.ISLAND].classList.add("nodisplay")
   divDict[GameState.MENU].classList.add("nodisplay")
