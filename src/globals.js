@@ -18,4 +18,7 @@ export const randBell = (num, frac=.5) => {
 
 export const bounded = (min, num, max) => Math.max(min, Math.min(max, num))
 
-
+export const enemyTypes = {
+  manta: 0,
+  boat: 1,
+}

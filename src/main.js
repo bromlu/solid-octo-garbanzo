@@ -46,6 +46,8 @@ function init() {
     if (doneLoadingResrcs()) {
       player.setAnimations();
       diceManager.addSpecialAbilityDice();
+      // diceManager.addDice(["3", "3", "3", "3", "3", "3"])
+      
       diceManager.addStandardDice();
       diceManager.addStandardDice();
       diceManager.addStandardDice();

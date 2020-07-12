@@ -125,6 +125,7 @@ export class Player {
       this.a = this.force;
     } else this.a = 0;
     this.v += this.a;
+    if (this.forceStuck & Math.random() < .1) this.force = Math.random() * 3
 
     if (keys[LEFT]) {
       this.aTheta = -this.forceTheta;
