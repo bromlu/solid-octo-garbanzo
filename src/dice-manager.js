@@ -42,7 +42,7 @@ export default class DiceManager {
 
   addLevel2Dice() {
     this.addLevel1Dice();
-    this.addDice(["left_cannon", "right_cannon", "forward", "dash", "shield", "X"], standardDiceColors)
+    this.addDice(["left_cannon", "right_cannon", "left_cannon", "right_cannon", "x", "x"], standardDiceColors)
   }
 
   addLevel3Dice() {
