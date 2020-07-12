@@ -93,7 +93,7 @@ export const enemeyShipFrames = [
   {"x":324,"y":10,"w":196,"h":229,"ax":466,"ay":107},
 ]
 
-export const canonBallFrames = [
+export const cannonBallFrames = [
   {"x":8,"y":11,"w":119,"h":102,"ax":55,"ay":37},
   {"x":194,"y":9,"w":82,"h":57,"ax":246,"ay":27},  
 ]

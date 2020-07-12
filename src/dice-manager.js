@@ -4,10 +4,10 @@ import { keys } from "./inputs"
 import { player } from "./main"
 import { sounds } from "./load";
 
-const controlModifierDiceFaces = ["1", "2", "1", "-1", "-2", "-1"]
+const controlModifierDiceFaces = ["1", "2", "3", "-1", "-2", "0"]
 const abilityDiceFaces = [" ", "Dash", "Fire"]
 
-const standardDiceFaces = ["1", "2", "0", "-1", "-2", "0"]
+const standardDiceFaces = ["1", "2", "3", "-1", "-2", "0"]
 const specialAbilityDiceFaces = ["Dash", "Fire", "Fire", "Dash", "Fire", "Fire"]
 const DashDiceFaces = ["Fire", "Dash", "Dash", "Dash", "Dash", "Dash"]
 const FireDiceFaces = ["Fire", "Fire", "Fire", "Fire", "Fire", "Fire"]
@@ -137,6 +137,8 @@ export default class DiceManager {
   onRollFinished() {
     this.rolling = false;
     this.force = 0;
+
+    player.resolveDiceRoll();
   }
 
   update() {

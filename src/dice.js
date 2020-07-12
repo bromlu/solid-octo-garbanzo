@@ -74,8 +74,8 @@ export class Dice {
     this.rotX = degToRad(0);
     this.rotY = degToRad(0);
 
-    this.rotXTarget = Math.PI / 4;
-    this.rotYTarget = Math.PI / 4;
+    this.rotXTarget = Math.PI / 4 + Math.PI/2 * Math.floor((Math.random() * 3));
+    this.rotYTarget = Math.PI / 4 + Math.PI/2 * Math.floor((Math.random() * 3));
     this.rotXVel = .001;
     this.rotYVel = .001;
     this.rollStopTime = 0

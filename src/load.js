@@ -3,11 +3,13 @@ export let loaded = 0;
 const imgSources = {
   player: "/assets/player.png",
   map: "/assets/ocean.png",
-  enemy: "/assets/enemy.png",
+  enemyBoat: "/assets/Enemy_Boat_Movement.png",
   dash: "/assets/dash.png",
   island: "/assets/island.png",
   manta: "/assets/Manta_Ray.png",
   boat: "/assets/Boat_Movement.png",
+  bullet: "/assets/Cannonballs.png",
+  splash: "/assets/splash.png",
 }
 
 const audioSources = {
