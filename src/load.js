@@ -23,12 +23,14 @@ const imgSources = {
   rock: "./assets/Rocks.png",
   forcefield: "./assets/shield.png",
   brokenEnemy: "./assets/Broken_Enemy_Boat.png",
+  brokenPlayer: "./assets/Broken_Player_Boats.png",
   treasure1: "./assets/treasure_chest/treasure_chest1.png",
   treasure2: "./assets/treasure_chest/treasure_chest2.PNG",
   treasure3: "./assets/treasure_chest/treasure_chest3.PNG",
   treasure4: "./assets/treasure_chest/treasure_chest4.PNG",
   treasure5: "./assets/treasure_chest/treasure_chest5.PNG",
-  seaweed: "./assets/Seaweed.png"
+  seaweed: "./assets/Seaweed.png",
+  turn: "./assets/turn_icon.png",
 }
 
 const audioSources = {
@@ -38,9 +40,10 @@ const audioSources = {
   hit: "./assets/hit.mp3",
   ocean_ambient: "./assets/ocean_ambient.mp3",
   shoot: "./assets/shoot.mp3",
-  splash: "./assets/splash.mp3"
+  splash: "./assets/splash.mp3",
+  music: "./assets/music_chill.mp3",
+  shield: "./assets/force_field_short.mp3"
 }
-console.log(Object.keys(imgSources).length + Object.keys(audioSources).length)
 export const imgs = {}
 export const sounds = {}
 
@@ -59,7 +62,6 @@ export function preloadAssets() {
 window.sounds = sounds;
 
 export const doneLoadingResrcs = () => {
-  console.log(loaded)
   return loaded == Object.keys(imgSources).length + Object.keys(audioSources).length
 }
 

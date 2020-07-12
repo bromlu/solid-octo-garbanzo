@@ -62,9 +62,16 @@ function init() {
       // diceManager.addStandardDice();
       // diceManager.addStandardDice();
       // diceManager.addStandardDice();
-      diceManager.addLevel1Dice();
+      diceManager.addDiceForLevel(1);
       console.log(imgs)
       clearInterval(loadImgInterval);
+
+      sounds.ocean_ambient.loop = true;
+      sounds.ocean_ambient.volume = 0.05;
+      sounds.ocean_ambient.play();
+      sounds.music.loop = true;
+      sounds.music.volume = 0.2;
+      sounds.music.play();
     }
   }, 100)
 }
@@ -78,11 +85,11 @@ init();
 
 export function startGame() {
   gameState.setState(GameState.GAME, gameUpdate, gameDraw)
-  sounds.ocean_ambient.loop = true;
-  sounds.ocean_ambient.volume = 0.07;
-  sounds.ocean_ambient.play();
   spawner.addLevel1Spawns();
   diceManager.rollAll()
+  sounds.ocean_ambient.pause()
+
+  setTimeout(() => player.showMessage("<A   D>", true), 500)
   // spawner.addEnemy(new Enemy(0, -400, new RandomMovementAI(1000)))
 
   // dice.roll(Math.floor(Math.random() * 6), 2000)
@@ -139,9 +146,16 @@ export function gameUpdate() {
   Particles.update()
   player.update();
   if (player.y < island.y) {
+    if (currentLevel >= 4) {
+      console.log("done")
+      gameState.setState(GameState.CRED, () => {}, () => {});
+      resetGame()
+      return;
+    }
     setTimeout(() => setupLevel(), 0);
     gameState.setState(GameState.ISLAND, () => {}, () => {});
     playTreasureAnimation()
+    sounds.ocean_ambient.play();
     // diceManager.setDiceFacesInHtml()
   }
   spawner.update();
@@ -184,11 +198,24 @@ export function setupLevel() {
   enemyBullets.length = 0
   playerBullets.length = 0
   enemies.length = 0
+  obstacles.length = 0
   camera.yAnchor = 0;
   currentLevel++;
+  island.y -= 1000
   spawner.addSpawnsForLevel(currentLevel)
-  // diceManager.resetDice();
+  diceManager.resetDice();
   diceManager.addDiceForLevel(currentLevel)
   diceManager.rollAll();
   console.log(currentLevel, spawner.enemiesToSpawn)
-} 
+}
+
+export function resetGame() {
+  currentLevel = 0;
+  diceManager.resetDice();
+  // let goners = document.getElementsByClassName("gone");
+  // goners.forEach(element => {
+    //   element.parentNode.removeChild(element)
+    // });
+  diceManager.allDice = [];
+  setupLevel();
+}

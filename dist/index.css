@@ -55,7 +55,7 @@ body > div {
 }
 
 #credDiv {
-    background-image: url("./assets/Credits_.png");
+    background-image: url("./assets/Credits_with_btn.png");
     background-size: contain;
     cursor: pointer;
 }

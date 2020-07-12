@@ -25,7 +25,7 @@ export class Bullet {
   }
   draw(ctx) {
     if (this.sunk) return;
-    if (this.sinking) {
+    if (this.sinking && this.y < 0) {
       this.splashAnimation.draw(ctx, this.x, this.y, false, .4);
       return;
     }

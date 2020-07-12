@@ -1,7 +1,8 @@
 import { imgs, sounds } from "./load"
-import { player, island } from "./main"
+import { player, island, enemyBullets } from "./main"
 import { SIZE, bounded, TAU, enemyTypes } from "./globals";
 import Animation, { enemyTentacleFrames, splashFrames } from "./animation";
+import { Bullet } from "./bullet"
 
 export class Obstacles {
     constructor(x, y, type) {
@@ -10,6 +11,7 @@ export class Obstacles {
 
     this.r = 32;
     this.type = type
+    this.theta = 0;
 
     this.health = 100;
     this.showHideDuration = 1100;
@@ -39,10 +41,41 @@ export class Obstacles {
     let splashFrameSelector = Animation.getLinearFrameSelector(400, splashFrames.length)
     this.splashAnimation = new Animation(imgs.splash, splashFrames, splashFrameSelector);
 
+    this.lastShot = Date.now() // Don't shoot right away
+    this.reloadTime = 2200 // every other showing?
+    this.bulletV = 30;
   }
 
   update() {
     if (this.type !== enemyTypes.kraken) return;
+
+    if (Date.now() > this.lastShot + this.reloadTime && this.hiding) {
+      sounds.enemy_attack.volume = 0.05;
+      sounds.enemy_attack.currentTime = 0.3;
+      sounds.enemy_attack.play();
+
+      let useRight = !this.flip;
+      let n = 1;
+      let spread = Math.PI / 2;
+      if (useRight) {
+        for (let i = 0; i < n; i++) {
+          let dir = this.theta + Math.PI / 2 // - spread / 2 + ((i + 1) * (spread / (n + 2)))
+          // let dir = this.theta + Math.PI/2;
+          let xv = Math.sin(dir) * this.bulletV;
+          let yv = -Math.cos(dir) * this.bulletV;
+          enemyBullets.push(new Bullet(this.x, this.y, xv, yv, true))
+        }
+      } else {
+        for (let i = 0; i < n; i++) {
+          let dir = this.theta - Math.PI / 2 // - spread / 2 + ((i + 1) * (spread / (n + 2)))
+          let xv = Math.sin(dir) * this.bulletV;
+          let yv = -Math.cos(dir) * this.bulletV;
+          enemyBullets.push(new Bullet(this.x, this.y, xv, yv, true))
+        }
+      }
+      this.lastShot = Date.now();
+    }
+
     if (this.sinking) {
       if (Date.now() >= this.sinkInst) {
         this.sunk = true;

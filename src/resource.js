@@ -1,4 +1,11 @@
 import { SIZE, lerp, colorDict, bounded } from "./globals";
+import { imgs } from "./load"
+
+const cantTurnMsgs = [
+  "Wheel's stuck!",
+  "Can't seem to turn!"
+]
+
 export class ResourceManager {
   constructor() {
     this.ammo = 10;
@@ -18,7 +25,10 @@ export class ResourceManager {
   }
   useRudder() {
     this.rudder--;
-    if (this.rudder < 0) this.rudder = 0;
+    if (this.rudder <= 0) {
+      this.rudder = 0;
+      player.showMessage(cantTurnMsgs)
+    }
   }
 
   useControl() {
@@ -53,26 +63,33 @@ export class ResourceManager {
 
   draw(ctx) {
     ctx.strokeStyle = "#222"
-    ctx.fillStyle = colorDict["red"]
+    ctx.fillStyle = colorDict["red"];
     let pad = 20;
     let x = pad;
     let w = 20;
     let maxH = 150
     let h = lerp(0, maxH, this.ammo/this.maxAmmo)
-    ctx.fillRect(x, SIZE - h - pad, w, h);
-    ctx.strokeRect(x, SIZE - maxH - pad, w, maxH);
+    ctx.fillRect(x, SIZE - h - pad - w, w, h);
+    ctx.strokeRect(x, SIZE - maxH - pad - w, w, maxH);
+    
+    ctx.drawImage(imgs.right_cannon, x-w/2, SIZE - pad - w, w*2, w*2)
 
     x += w + pad;
-    ctx.fillStyle = colorDict["blue"]
+    ctx.fillStyle = colorDict["blue"];
     h = lerp(0, maxH, this.control/this.maxControl)
-    ctx.fillRect(x, SIZE - h - pad, w, h);
-    ctx.strokeRect(x, SIZE - maxH - pad, w, maxH);
-    
+    ctx.fillRect(x, SIZE - h - pad - w, w, h);
+    ctx.strokeRect(x, SIZE - maxH - pad - w, w, maxH);
+
+    ctx.drawImage(imgs.shield, x-w/2, SIZE - pad - w, w*2, w*2)
+
     x += w + pad;
     ctx.fillStyle = colorDict["green"]
     h = lerp(0, maxH, this.rudder/this.maxRudder)
-    ctx.fillRect(x, SIZE - h - pad, w, h);
-    ctx.strokeRect(x, SIZE - maxH - pad, w, maxH);
+    ctx.fillRect(x, SIZE - h - pad - w, w, h);
+    ctx.strokeRect(x, SIZE - maxH - pad - w, w, maxH);
+
+    ctx.drawImage(imgs.turn, x-w/2, SIZE - pad - w, w*2, w*2)
+
   }
 
 }

@@ -1,9 +1,10 @@
-import { TAU, SIZE, bounded, lerp } from "./globals";
+import { TAU, SIZE, bounded, lerp, enemyTypes } from "./globals";
 import { imgs, sounds } from "./load"
 import { keys, UP, LEFT, RIGHT, SPACE, A, D, W } from "./inputs"
-import { diceManager, playerBullets, enemies, resourceManager } from "./main";
+import { diceManager, playerBullets, enemies, resourceManager, gameState, resetGame } from "./main";
 import { Bullet } from "./bullet";
 import Animation, { playerShipFrames, shieldFrames } from "./animation";
+import GameState from "./state";
 
 
 export class Player {
@@ -39,6 +40,9 @@ export class Player {
 
     this.shield = false;
     this.shieldInst = 0;
+
+    this.sinkInst = 0
+    this.sinking = false;
   }
 
   reset() {
@@ -59,10 +63,14 @@ export class Player {
     this.bulletV = 30;
     this.afterImages = [];
     this.lastDash = 0;
-    this.message = ""
+    this.message = "";
     this.lastMessageInst = 0;
     this.shield = false;
     this.shieldInst = 0;
+    this.sinkInst = 0;
+    this.sinking = false;
+
+    this.invincibleEnd = 0;
   }
 
   setAnimations() {
@@ -82,11 +90,21 @@ export class Player {
     ctx.translate(x, y);
     ctx.rotate(this.theta);
 
+    if (this.sinking) {
+      ctx.scale(.4,.4);
+      ctx.drawImage(imgs.brokenPlayer, -163/2, -235/2)
+      ctx.restore();
+      return;
+    }
+
     // ctx.beginPath()
     // ctx.arc(0, 0, this.r, 0, TAU);
     // ctx.closePath()
     // ctx.fill();
-    
+    let invince = this.invincibleEnd > Date.now()
+    if (invince) {
+      ctx.globalAlpha = .5 + .5 * Math.sin(Date.now())
+    }
     if (this.v > 2) {
       this.moveAnimation.draw(ctx, 0, 0, false, .4);
     } else if (this.vTheta > .07) { 
@@ -99,13 +117,7 @@ export class Player {
     
     if (this.shield) {
       this.shieldAnimation.draw(ctx, 0, 0, false, .5);
-      // ctx.beginPath()
-      // ctx.arc(0, 0, this.r, 0, TAU);
-      // ctx.closePath()
-      // ctx.strokeStyle = "#949";
-      // ctx.stroke();
     }
-
     
     ctx.restore();
     if(this.isDashing()) {
@@ -134,6 +146,13 @@ export class Player {
     //     this.chargingSpecial = false
     //   }
     // }
+    if (this.sinking) {
+      if (Date.now() > this.sinkInst) {
+        gameState.setState(GameState.MENU, () => {}, () => {});
+        resetGame();
+      }
+      return;
+    }
 
     if (this.shield) {
       this.r = 32
@@ -208,7 +227,7 @@ export class Player {
     if (n == 0) { console.log("no ammo"); return;}
     resourceManager.useAmmo(n);
 
-    sounds.shoot.volume = 0.2;
+    sounds.shoot.volume = 0.02;
     sounds.shoot.currentTime = 0;
     sounds.shoot.play();
 
@@ -229,7 +248,7 @@ export class Player {
 
     if (n == 0) { console.log("no ammo"); return;}
 
-    sounds.shoot.volume = 0.2;
+    sounds.shoot.volume = 0.02;
     sounds.shoot.currentTime = 0;
     sounds.shoot.play();
 
@@ -264,20 +283,28 @@ export class Player {
   //   }
   // }
 
-  handleCollision() {
-    if (this.shield) {
-      //TODO: shield sound?
+  handleCollision(objectThatHitMe) {
+    if (objectThatHitMe && objectThatHitMe.type === enemyTypes.seaweed) {
+      this.force = 0.5;
+      setTimeout(() => { this.force = 1 }, 500);
       return;
     }
-    this.chargingSpecial = false;
-    if (!diceManager.rolling) {
-      if(diceManager.allDice.length === 1) {
-        // YOU LOSE
-        console.log("YOU LOSE")
-        return;
-      }
-      diceManager.loseFace();
+    if (this.shield && sounds.shield.currentTime == 0 || sounds.shield.currentTime > 1) {
+      sounds.shield.currentTime = 0;
+      sounds.shield.volume = 0.09;
+      sounds.shield.play();
+      return;
     }
+    if (this.invincibleEnd > Date.now()) return;
+    this.invincibleEnd = Date.now() + 1000;
+    sounds.hit.volume = 0.05;
+    sounds.hit.currentTime = 0.85;
+    sounds.hit.play();
+    console.log("hit")
+    this.chargingSpecial = false;
+    
+    // if (!diceManager.rolling) 
+    diceManager.loseFace();
 
     if (Date.now() - this.lastMessageInst > 2000 && Math.random() < .4) {
       this.showHurtMessage();
@@ -301,7 +328,12 @@ export class Player {
     this.showMessage(hurtMsgs[Math.floor(Math.random()*hurtMsgs.length)])
   }
 
-  showMessage(msg) {
+  showMessage(msg, important) { 
+    if (!important && Date.now() - this.lastMessageInst < 2000) {
+      return;
+    }
+    if (typeof msg == "string") this.message = msg;
+    else msg = msg[Math.floor(Math.random()*msg.length)];
     this.message = msg;
     this.lastMessageInst = Date.now();
   }

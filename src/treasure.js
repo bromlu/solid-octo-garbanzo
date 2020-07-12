@@ -1,7 +1,8 @@
 import { getEl } from "./globals"
 import { imgs } from "./load"
 import { Dice } from "./dice";
-import { diceManager } from "./main";
+import { levelDices } from "./dice-manager";
+import { diceManager, currentLevel } from "./main";
 
 
 
@@ -20,7 +21,8 @@ export function playTreasureAnimation(idx = 0) {
   tctx.drawImage(timgs[idx], 0, 0, 500, 500)
   if (idx == 4) {
     let dice = new Dice(["1", "2", "3", "4", "5", "6"], ["grey", "grey", "grey", "grey", "grey", "grey"])
-    // dice.mapFaces(["left_cannon", "right_cannon", "forward", "dash", "shield", "X"], ["grey", "grey", "grey", "grey", "grey", "grey"])
+    let ld = levelDices[currentLevel - 1]
+    dice.mapFaces(ld.faces, ld.colors)
     dice.draw(tctx, 0, 0)
     dice.rotXTarget = Math.PI / 4;
     dice.rotYTarget = Math.PI / 4;
@@ -34,6 +36,7 @@ export function playTreasureAnimation(idx = 0) {
     console.log(dice)
     
     getEl("continueBtn").disabled = false
+    getEl("welcome-msg").innerText = "You found a new dice!";
     return;
   }
   setTimeout(() => playTreasureAnimation(idx+1), 500)

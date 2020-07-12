@@ -1,5 +1,5 @@
 import { Dice } from "./dice";
-import { SIZE, randBell, bounded, lerp, getEl, TAU } from "./globals"
+import { SIZE, randBell, bounded, lerp, getEl, TAU, colorDict } from "./globals"
 import { keys, cursor } from "./inputs"
 import { player, lastKeys, textParticles, resourceManager } from "./main"
 import { sounds, imgs } from "./load";
@@ -14,6 +14,26 @@ const standardDiceFaces = ["left_cannon", "right_cannon", "forward", "dash", "sh
 // const standardDiceFaces = ["left_cannon", "left_cannon", "left_cannon", "right_cannon", "right_cannon", "right_cannon"]
 const standardDiceColors = ["red", "blue", "green", "red", "blue", "grey"]
 // const standardDiceColors = ["grey", "grey", "grey", "grey", "grey", "grey"]
+
+export const levelDices = [
+  {
+    faces: ["forward", "forward", "forward", "dash", "shield", "forward"],
+    colors: ["green", "blue", "green", "blue", "green", "grey"]
+  },
+  {
+    faces: ["left_cannon", "right_cannon", "left_cannon", "right_cannon", "right_cannon", "forward"],
+    colors: ["red", "blue", "green", "red", "blue", "grey"]
+  },
+  {
+    faces: ["left_cannon", "right_cannon", "forward", "dash", "shield", "right_cannon"],
+    colors: ["red", "blue", "green", "red", "blue", "green"]
+  },
+  {
+    faces: ["dash", "dash", "left_cannon", "right_cannon", "shield", "shield"],
+    colors: ["red", "blue", "green", "red", "blue", "grey"]
+  }
+]
+
 export default class DiceManager {
   constructor() {
     this.allDice = [];
@@ -28,26 +48,8 @@ export default class DiceManager {
   }
 
   addDiceForLevel(num) {
-    [
-      null,
-      this.addLevel1Dice,
-      this.addLevel2Dice,
-    ][num].call(this)
-  }
-  
-  addLevel1Dice() {
-    this.allDice = []
-    this.addDice(["forward", "forward", "forward", "dash", "shield", "X"], standardDiceColors)
-  }
-
-  addLevel2Dice() {
-    this.addLevel1Dice();
-    this.addDice(["left_cannon", "right_cannon", "left_cannon", "right_cannon", "x", "x"], standardDiceColors)
-  }
-
-  addLevel3Dice() {
-    this.addLevel2Dice()
-    this.addDice(["left_cannon", "right_cannon", "forward", "dash", "shield", "X"], standardDiceColors)
+    let d = levelDices[num-1]
+    this.addDice(d.faces, d.colors)
   }
 
   // reRollControlModifiers() {
@@ -225,7 +227,7 @@ export default class DiceManager {
         dice.done = dice.isDoneRolling(now);
         if (dice.done) {
           numDone++;
-          console.log("clunk")
+          sounds.clunk.volume = 0.5
           sounds.clunk.currentTime = 0;
           sounds.clunk.play();
           dice.resolved = false;
@@ -291,7 +293,7 @@ export default class DiceManager {
         d.resolved = true;
         let gain = Math.ceil(amt/2) + 1;
         amt += gain
-        textParticles.newTextPart(d.x, d.y-30, "white", "+"+gain)
+        textParticles.newTextPart(d.x, d.y-30, colorDict[dice.color], "+"+gain)
       }
     }
     resourceManager.add(amt, color);
@@ -316,7 +318,11 @@ export default class DiceManager {
       }
     }
     if (minDice == null) {
-      console.log("heavy damage");
+      if (!player.sinking) {
+        player.sinking = true;
+        player.sinkInst = Date.now() + 2000
+        player.showMessage("It looks like the end for us...")
+      }
       return;
     }
     
@@ -324,8 +330,8 @@ export default class DiceManager {
       minDice.faces.map((face, idx) => idx == minDice.faceIdx ? "X" : face),
       minDice.colors.map((color, idx) => idx == minDice.faceIdx ? "grey" : color)
     );
-    minDice.face = "X"
-    minDice.color = "grey"
+    minDice.face = "X";
+    minDice.color = "grey";
   }
 
 }

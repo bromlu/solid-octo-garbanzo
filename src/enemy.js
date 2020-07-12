@@ -87,7 +87,7 @@ export class Enemy {
     let now = Date.now();
 
     if (this.AI.useShot(this) && now > this.lastShot + this.reloadTime) {
-      sounds.shoot.volume = 0.2;
+      sounds.shoot.volume = 0.02;
       sounds.shoot.currentTime = 0;
       sounds.shoot.play();
 

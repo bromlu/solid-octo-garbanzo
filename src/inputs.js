@@ -1,7 +1,7 @@
 import { diceManager, gameState, gameUpdate, gameDraw, resetLevel, startGame, initLevel2 } from "./main";
 import GameState from "./state"
 import { getEl, canvas } from "./globals";
-import { doneLoadingResrcs } from "./load"
+import { doneLoadingResrcs, sounds } from "./load"
 
 export const keys = {}
 export const cursor = { x: -1, y: -1 }
@@ -57,6 +57,7 @@ export function setUpInputs() {
 
 getEl("continueBtn").addEventListener("click", () => {
     gameState.setState(GameState.GAME, gameUpdate, gameDraw)
+    sounds.ocean_ambient.pause()
     getEl("continueBtn").disabled = true;
 })
 

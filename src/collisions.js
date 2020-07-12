@@ -59,8 +59,8 @@ export class CollisionManager {
       if (dx < player.r + obstacle.r && dy < player.r + obstacle.r) {
         if (player.isDashing()) {
           this.handleObstacleHurt(obstacle)
-        } else if(obstacle.type !== enemyTypes.seaweed) {
-          this.handlePlayerHurt();
+        } else {
+          this.handlePlayerHurt(obstacle);
         }
       }
     });
@@ -68,25 +68,20 @@ export class CollisionManager {
 
   handleEnemyHurt(enemy) {
     if(sounds.hit.currentTime > 1 || sounds.hit.currentTime == 0) {
-      sounds.hit.volume = 0.2;
+      sounds.hit.volume = 0.05;
       sounds.hit.currentTime = 0.85;
       sounds.hit.play();
     }
     enemy.handleCollision()
   }
 
-  handlePlayerHurt() {
-    if(sounds.hit.currentTime > 1 || sounds.hit.currentTime == 0) {
-      sounds.hit.volume = 0.2;
-      sounds.hit.currentTime = 0.85;
-      sounds.hit.play();
-    }
-    player.handleCollision()
+  handlePlayerHurt(object) {
+    player.handleCollision(object)
   }
 
   handleObstacleHurt(obstacle) {
     if(sounds.hit.currentTime > 1 || sounds.hit.currentTime == 0) {
-      sounds.hit.volume = 0.2;
+      sounds.hit.volume = 0.05;
       sounds.hit.currentTime = 0.85;
       sounds.hit.play();
     }
