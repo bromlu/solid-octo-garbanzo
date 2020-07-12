@@ -1,13 +1,13 @@
 
-export let loaded = 0;
+export var loaded = 0;
 const imgSources = {
-  player: "./assets/player.png",
   map: "./assets/ocean.png",
   enemyBoat: "./assets/Enemy_Boat_Movement.png",
   island: "./assets/island.png",
   manta: "./assets/Manta_Ray.png",
   boat: "./assets/Boat_Movement.png",
   bullet: "./assets/Cannonballs.png",
+  enemyBullet: "./assets/Monster_Attacks.png",
   splash: "./assets/splash.png",
   red: "./assets/red_face.png",
   blue: "./assets/blue_face.png",
@@ -22,7 +22,13 @@ const imgSources = {
   text: "./assets/Text_Bubble.png",
   rock: "./assets/Rocks.png",
   forcefield: "./assets/shield.png",
-  brokenEnemy: "./assets/shield.png",
+  brokenEnemy: "./assets/Broken_Enemy_Boat.png",
+  treasure1: "./assets/treasure_chest/treasure_chest1.png",
+  treasure2: "./assets/treasure_chest/treasure_chest2.PNG",
+  treasure3: "./assets/treasure_chest/treasure_chest3.PNG",
+  treasure4: "./assets/treasure_chest/treasure_chest4.PNG",
+  treasure5: "./assets/treasure_chest/treasure_chest5.PNG",
+  seaweed: "./assets/Seaweed.png"
 }
 
 const audioSources = {
@@ -34,6 +40,7 @@ const audioSources = {
   shoot: "./assets/shoot.mp3",
   splash: "./assets/splash.mp3"
 }
+console.log(Object.keys(imgSources).length + Object.keys(audioSources).length)
 export const imgs = {}
 export const sounds = {}
 
@@ -51,6 +58,9 @@ export function preloadAssets() {
 }
 window.sounds = sounds;
 
-export const doneLoadingResrcs = () => loaded == Object.keys(imgSources).length + Object.keys(audioSources).length
+export const doneLoadingResrcs = () => {
+  console.log(loaded)
+  return loaded == Object.keys(imgSources).length + Object.keys(audioSources).length
+}
 
-const onResrcLoad = () => {loaded++; console.log("loaded")}
+const onResrcLoad = () => { loaded++; console.log("loaded", loaded) }

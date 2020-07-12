@@ -1,8 +1,8 @@
 import { TAU, randBell } from "./globals";
-import Animation, { cannonBallFrames, splashFrames } from "./animation";
+import Animation, { cannonBallFrames, splashFrames, enemeyCannonBallFrames } from "./animation";
 import { imgs } from "./load";
 export class Bullet {
-  constructor(x, y, vx, vy) {
+  constructor(x, y, vx, vy, fromEnemy) {
     this.x = x;
     this.y = y;
     this.vx = randBell(vx, 0.2);
@@ -14,7 +14,11 @@ export class Bullet {
     this.friction = .95;
 
     let frameSelector = (t) => (this.vx*this.vx + this.vy*this.vy) > 100 ? 0 : 1
-    this.animation = new Animation(imgs.bullet, cannonBallFrames, frameSelector);
+    if (fromEnemy) {
+      this.animation = new Animation(imgs.enemyBullet, enemeyCannonBallFrames, frameSelector);
+    } else {
+      this.animation = new Animation(imgs.bullet, cannonBallFrames, frameSelector);
+    }
 
     let splashFrameSelector = Animation.getLinearFrameSelector(400, splashFrames.length)
     this.splashAnimation = new Animation(imgs.splash, splashFrames, splashFrameSelector);

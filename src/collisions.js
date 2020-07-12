@@ -59,7 +59,7 @@ export class CollisionManager {
       if (dx < player.r + obstacle.r && dy < player.r + obstacle.r) {
         if (player.isDashing()) {
           this.handleObstacleHurt(obstacle)
-        } else {
+        } else if(obstacle.type !== enemyTypes.seaweed) {
           this.handlePlayerHurt();
         }
       }

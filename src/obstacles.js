@@ -111,6 +111,18 @@ export class Obstacles {
       return;
     }
 
+    if (this.type === enemyTypes.seaweed) {
+      ctx.save();
+
+      ctx.translate(this.x, this.y);
+
+      ctx.drawImage(imgs.seaweed, 0 - 32, 0 - 32, 64, 64);
+
+      ctx.restore();
+      return;
+    }
+
+
     if (this.sunk || this.hidden) return;
     if (this.sinking || this.hiding || this.showing) {
       this.splashAnimation.draw(ctx, this.x, this.y, false, .4);
@@ -130,6 +142,7 @@ export class Obstacles {
   }
 
   handleCollision() {
+    if (this.type !== enemyTypes.kraken) return;
     this.health -= 100;
     if (this.health <= 0) {
       this.sinking = true;

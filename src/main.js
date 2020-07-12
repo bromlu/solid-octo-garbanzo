@@ -1,20 +1,18 @@
-import GameState from "./state"
+import GameState, {hideOuterDivs} from "./state"
 import { SIZE, getEl, canvas, LINEWIDTH, MAPW } from "./globals"
 import { setUpInputs, keys, cursor } from './inputs';
 import { Particles } from "./particles"
-import { Dice } from "./dice"
 import DiceManager from "./dice-manager"
 import { preloadAssets, doneLoadingResrcs, imgs } from "./load";
 import { Player } from "./player";
 import { Camera } from "./camera.js";
 import { Spawner } from './spawner'
-import { Enemy } from './enemy';
-import { RandomMovementAI, PatrolAI, TargettingAI } from './AI'
 import { CollisionManager } from "./collisions";
 import { Island } from "./island"
 import { TextParticles } from "./particles"
 import { ResourceManager } from "./resource"
 import { sounds } from "./load";
+import { playTreasureAnimation } from "./treasure"
 
 const ctx = canvas.getContext("2d")
 canvas.width = SIZE
@@ -44,6 +42,9 @@ export let currentLevel = 1;
 export let lastKeys = {};
 
 function init() {
+  gameState.setState(GameState.MENU, () => {}, () => {});
+  hideOuterDivs();
+  getEl("menuDiv").classList.remove("nodisplay")
   ctx.lineWidth = LINEWIDTH;
   preloadAssets()
   setUpInputs()
@@ -52,15 +53,18 @@ function init() {
   
   let loadImgInterval = setInterval(() => {
     if (doneLoadingResrcs()) {
+      console.log("READY")
+      getEl("playBtn").disabled = false;
+      console.log(getEl("playBtn"))
       player.setAnimations();
       // diceManager.addSpecialAbilityDice();
-      diceManager.addStandardDice();
-      diceManager.addStandardDice();
-      diceManager.addStandardDice();
-      diceManager.addStandardDice();
+      // diceManager.addStandardDice();
+      // diceManager.addStandardDice();
+      // diceManager.addStandardDice();
+      // diceManager.addStandardDice();
+      diceManager.addLevel1Dice();
       console.log(imgs)
       clearInterval(loadImgInterval);
-      startGame()
     }
   }, 100)
 }
@@ -72,13 +76,13 @@ window.gameState = gameState;
 
 init();
 
-function startGame() {
+export function startGame() {
   gameState.setState(GameState.GAME, gameUpdate, gameDraw)
   sounds.ocean_ambient.loop = true;
   sounds.ocean_ambient.volume = 0.07;
   sounds.ocean_ambient.play();
   spawner.addLevel1Spawns();
-  diceManager.rollAll();
+  diceManager.rollAll()
   // spawner.addEnemy(new Enemy(0, -400, new RandomMovementAI(1000)))
 
   // dice.roll(Math.floor(Math.random() * 6), 2000)
@@ -137,7 +141,8 @@ export function gameUpdate() {
   if (player.y < island.y) {
     setTimeout(() => setupLevel(), 0);
     gameState.setState(GameState.ISLAND, () => {}, () => {});
-    diceManager.setDiceFacesInHtml()
+    playTreasureAnimation()
+    // diceManager.setDiceFacesInHtml()
   }
   spawner.update();
   for (let i = 0; i < enemies.length; i++) {
@@ -181,5 +186,6 @@ export function setupLevel() {
   camera.yAnchor = 0;
   currentLevel++;
   spawner.addSpawnsForLevel(currentLevel)
+  diceManager.addDiceForLevel(currentLevel)
   console.log(currentLevel, spawner.enemiesToSpawn)
-}
+} 

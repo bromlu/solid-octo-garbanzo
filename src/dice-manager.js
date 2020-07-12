@@ -2,7 +2,7 @@ import { Dice } from "./dice";
 import { SIZE, randBell, bounded, lerp, getEl, TAU } from "./globals"
 import { keys, cursor } from "./inputs"
 import { player, lastKeys, textParticles, resourceManager } from "./main"
-import { sounds } from "./load";
+import { sounds, imgs } from "./load";
 
 // const controlModifierDiceFaces = ["1", "2", "3", "-1", "-2", "0"]
 // const abilityDiceFaces = [" ", "Dash", "Fire"]
@@ -27,43 +27,63 @@ export default class DiceManager {
     this.rollStart = 0;
   }
 
-  reRollControlModifiers() {
-    for(let controlDiceIndex = 1; controlDiceIndex < 5; controlDiceIndex++) {
-      let faces = [];
-      for (let i = 0; i < 6; i++) {
-        let newFaceIdx = Math.floor(Math.random() * controlModifierDiceFaces.length)
-        faces.push(controlModifierDiceFaces[newFaceIdx])
-      }
-      this.allDice.splice(controlDiceIndex, 1, new Dice(faces, "#777"));
-    }
-    this.setDiceFacesInHtml()
+  addDiceForLevel(num) {
+    [
+      null,
+      this.addLevel1Spawns,
+      this.addLevel2Spawns,
+    ][num].call(this)
+  }
+  
+  addLevel1Dice() {
+    this.addDice(["left_cannon", "right_cannon", "forward", "dash", "shield", "X"], standardDiceColors)
   }
 
-  reRollAbilities() {
-    let faces = [];
-    for (let i = 0; i < 6; i++) {
-      let newFaceIdx = Math.floor(Math.random() * abilityDiceFaces.length)
-      faces.push(abilityDiceFaces[newFaceIdx])
-    }
-    this.allDice.splice(0, 1);
-    this.allDice.unshift(new Dice(faces, "#777"))
-    this.setDiceFacesInHtml()
+  addLevel2Dice() {
+    this.addDice(["left_cannon", "right_cannon", "forward", "dash", "shield", "X"], standardDiceColors)
   }
 
-  setDiceFacesInHtml() {
-    getEl('abilityDiceFace1').src = this.allDice[0].faces[0] === 'Dash' ? './assets/dash.png' : ''
-    getEl('abilityDiceFace2').src = this.allDice[0].faces[1] === 'Dash' ? './assets/dash.png' : ''
-    getEl('abilityDiceFace3').src = this.allDice[0].faces[2] === 'Dash' ? './assets/dash.png' : ''
-    getEl('abilityDiceFace4').src = this.allDice[0].faces[3] === 'Dash' ? './assets/dash.png' : ''
-    getEl('abilityDiceFace5').src = this.allDice[0].faces[4] === 'Dash' ? './assets/dash.png' : ''
-    getEl('abilityDiceFace6').src = this.allDice[0].faces[5] === 'Dash' ? './assets/dash.png' : ''
-    getEl('controlDiceFace1').innerHTML = this.allDice[1].faces[0]
-    getEl('controlDiceFace2').innerHTML = this.allDice[1].faces[1]
-    getEl('controlDiceFace3').innerHTML = this.allDice[1].faces[2]
-    getEl('controlDiceFace4').innerHTML = this.allDice[1].faces[3]
-    getEl('controlDiceFace5').innerHTML = this.allDice[1].faces[4]
-    getEl('controlDiceFace6').innerHTML = this.allDice[1].faces[5]
+  addLevel2Dice() {
+    this.addDice(["left_cannon", "right_cannon", "forward", "dash", "shield", "X"], standardDiceColors)
   }
+
+  // reRollControlModifiers() {
+  //   for(let controlDiceIndex = 1; controlDiceIndex < 5; controlDiceIndex++) {
+  //     let faces = [];
+  //     for (let i = 0; i < 6; i++) {
+  //       let newFaceIdx = Math.floor(Math.random() * controlModifierDiceFaces.length)
+  //       faces.push(controlModifierDiceFaces[newFaceIdx])
+  //     }
+  //     this.allDice.splice(controlDiceIndex, 1, new Dice(faces, "#777"));
+  //   }
+  //   this.setDiceFacesInHtml()
+  // }
+
+  // reRollAbilities() {
+  //   let faces = [];
+  //   for (let i = 0; i < 6; i++) {
+  //     let newFaceIdx = Math.floor(Math.random() * abilityDiceFaces.length)
+  //     faces.push(abilityDiceFaces[newFaceIdx])
+  //   }
+  //   this.allDice.splice(0, 1);
+  //   this.allDice.unshift(new Dice(faces, "#777"))
+  //   this.setDiceFacesInHtml()
+  // }
+
+  // setDiceFacesInHtml() {
+  //   getEl('abilityDiceFace1').src = this.allDice[0].faces[0] === 'Dash' ? './assets/dash.png' : ''
+  //   getEl('abilityDiceFace2').src = this.allDice[0].faces[1] === 'Dash' ? './assets/dash.png' : ''
+  //   getEl('abilityDiceFace3').src = this.allDice[0].faces[2] === 'Dash' ? './assets/dash.png' : ''
+  //   getEl('abilityDiceFace4').src = this.allDice[0].faces[3] === 'Dash' ? './assets/dash.png' : ''
+  //   getEl('abilityDiceFace5').src = this.allDice[0].faces[4] === 'Dash' ? './assets/dash.png' : ''
+  //   getEl('abilityDiceFace6').src = this.allDice[0].faces[5] === 'Dash' ? './assets/dash.png' : ''
+  //   getEl('controlDiceFace1').innerHTML = this.allDice[1].faces[0]
+  //   getEl('controlDiceFace2').innerHTML = this.allDice[1].faces[1]
+  //   getEl('controlDiceFace3').innerHTML = this.allDice[1].faces[2]
+  //   getEl('controlDiceFace4').innerHTML = this.allDice[1].faces[3]
+  //   getEl('controlDiceFace5').innerHTML = this.allDice[1].faces[4]
+  //   getEl('controlDiceFace6').innerHTML = this.allDice[1].faces[5]
+  // }
 
   resetDice() {
     this.allDice.forEach(dice => {
@@ -128,8 +148,27 @@ export default class DiceManager {
         ctx.strokeStyle = "yellow";
         ctx.stroke();
         ctx.closePath()
+
+        this.drawToolTip(ctx, dice.face)
       }
     });
+  }
+
+  drawToolTip(ctx, face) {
+    let msg = tooltips[face];
+    if (!msg) return;
+    ctx.font = "20px Grenze Gotisch";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    let tm = ctx.measureText(msg);
+    let w = tm.width + 20;
+    let h = 30 + 20;
+    let x = cursor.x
+    let y = cursor.y - 30;
+
+    ctx.drawImage(imgs.text, x - w/2, y - h/2, w, h);
+    ctx.fillStyle = "#222"
+    ctx.fillText(msg, x, y);
   }
 
   drawBar(ctx) {
@@ -295,4 +334,13 @@ let faceScores = {
   "dash": 2,
   "shield": 2,
   "X": 100
+}
+
+let tooltips = {
+  "left_cannon": "Fire Left!",
+  "right_cannon": "Fire Right!",
+  "forward": "Forward!",
+  "dash": "Charge!",
+  "shield": "Shields Up!",
+  "X": "",
 }

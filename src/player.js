@@ -217,7 +217,7 @@ export class Player {
       let dir = this.theta + Math.PI / 2 - spread / 2 + ((i + 1) * (spread / (n + 2)))
       let xv = Math.sin(dir) * this.bulletV;
       let yv = -Math.cos(dir) * this.bulletV;
-      playerBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
+      playerBullets.push(new Bullet(this.x, this.y, xv, yv, false))
     }
   }
 
@@ -238,31 +238,31 @@ export class Player {
       let dir = this.theta - Math.PI / 2 - spread / 2 + ((i + 1) * (spread / (n + 2)))
       let xv = Math.sin(dir) * this.bulletV;
       let yv = -Math.cos(dir) * this.bulletV;
-      playerBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
+      playerBullets.push(new Bullet(this.x, this.y, xv, yv, false))
     }
   }
 
-  fireSpecial(diceForce) {
-    let frac = diceForce / diceManager.maxForce // 0 to 1
-    if (diceManager.allDice[0].face == "Dash") {
+  // fireSpecial(diceForce) {
+  //   let frac = diceForce / diceManager.maxForce // 0 to 1
+  //   if (diceManager.allDice[0].face == "Dash") {
      
-    } else if (diceManager.allDice[0].face == "Fire") {
-      let n = Math.floor(lerp(1, 4, frac));
-      let spread = Math.PI / 2;
-      for (let i = 0; i < n; i++) {
-        let dir = this.theta + Math.PI / 2 - spread / 2 + ((i + 1) * (spread / (n + 2)))
-        let xv = Math.sin(dir) * this.bulletV;
-        let yv = -Math.cos(dir) * this.bulletV;
-        playerBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
-      }
-      for (let i = 0; i < n; i++) {
-        let dir = this.theta - Math.PI / 2 - spread / 2 + ((i + 1) * (spread / (n + 2)))
-        let xv = Math.sin(dir) * this.bulletV;
-        let yv = -Math.cos(dir) * this.bulletV;
-        playerBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
-      }
-    }
-  }
+  //   } else if (diceManager.allDice[0].face == "Fire") {
+  //     let n = Math.floor(lerp(1, 4, frac));
+  //     let spread = Math.PI / 2;
+  //     for (let i = 0; i < n; i++) {
+  //       let dir = this.theta + Math.PI / 2 - spread / 2 + ((i + 1) * (spread / (n + 2)))
+  //       let xv = Math.sin(dir) * this.bulletV;
+  //       let yv = -Math.cos(dir) * this.bulletV;
+  //       playerBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
+  //     }
+  //     for (let i = 0; i < n; i++) {
+  //       let dir = this.theta - Math.PI / 2 - spread / 2 + ((i + 1) * (spread / (n + 2)))
+  //       let xv = Math.sin(dir) * this.bulletV;
+  //       let yv = -Math.cos(dir) * this.bulletV;
+  //       playerBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
+  //     }
+  //   }
+  // }
 
   handleCollision() {
     if (this.shield) {

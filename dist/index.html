@@ -28,15 +28,21 @@ void main() {
 </script>
 <script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
 <script src="https://webglfundamentals.org/webgl/resources/m4.js"></script>
-<body id="body">  
-  <div id="menuDiv"></div>
+<body id="body">
+  <div id="menuDiv">
+    <img id="playBtn" src="./assets/play_btn.png" alt="play">
+    <img id="credBtn" src="./assets/credit_btn.png" alt="credits">
+  </div>
   <div id="credDiv"></div>
-
-  <canvas id="canvas"></canvas>
+  
+  <canvas id="canvas">
+    <div id="backBtn">
+      Back
+    </div>
+  </canvas>
   <div id="diceMenu" class="nodisplay">
-    Arggghhhh! Welcome to port captain!
-    
-    <div id="diceFaces">
+    <!-- <img src="./assets/treasure_chest/treasure_chest5.PNG"> -->
+    <!-- <div id="diceFaces">
       <button id="reRollAbilities">Re-Roll Abilities</button>
       <img id="abilityDiceFace1" src="./assets/dash.png">
       <img id="abilityDiceFace2" src="./assets/dash.png">
@@ -54,7 +60,10 @@ void main() {
       <span id="controlDiceFace4">4</span>
       <span id="controlDiceFace5">5</span>
       <span id="controlDiceFace6">6</span>
-    </div>
+    </div> -->
+
+    Arggghhhh! Welcome to port captain!
+    <canvas id="treasureCanvas" width="500" height="500"></canvas>
 
     <button id="continueBtn">Continue!</button>
   </div>

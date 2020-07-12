@@ -40,8 +40,6 @@ export class Enemy {
     } else if (type == enemyTypes.boat) {
       let frameSelector = Animation.getLoopingFrameSelector(1000, 2)
       this.animation = new Animation(imgs.enemyBoat, enemeyShipFrames, frameSelector)
-
-      this.broken = new Animation(imgs.this.broken)
     }
 
     let splashFrameSelector = Animation.getLinearFrameSelector(400, splashFrames.length)
@@ -54,9 +52,9 @@ export class Enemy {
       if (Date.now() >= this.sinkInst) {
         this.sunk = true;
       }
-      if (this.type == enemyTypes.boat && this.sinkInst - Date.now()< 400 && !this.sinkAnimation.played) {
-        this.sinkAnimation.play()
-        this.sinkAnimation.played = true;
+      if (this.type == enemyTypes.boat && this.sinkInst - Date.now() < 800 && !this.splashAnimation.played) {
+        this.splashAnimation.play()
+        this.splashAnimation.played = true;
       }
       return;
     }
@@ -102,14 +100,14 @@ export class Enemy {
           // let dir = this.theta + Math.PI/2;
           let xv = Math.sin(dir) * this.bulletV;
           let yv = -Math.cos(dir) * this.bulletV;
-          enemyBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
+          enemyBullets.push(new Bullet(this.x, this.y, xv, yv, true))
         }
       } else {
         for (let i = 0; i < n; i++) {
           let dir = this.theta - Math.PI / 2 - spread / 2 + ((i + 1) * (spread / (n + 2)))
           let xv = Math.sin(dir) * this.bulletV;
           let yv = -Math.cos(dir) * this.bulletV;
-          enemyBullets.push(new Bullet(this.x, this.y, xv, yv, 500))
+          enemyBullets.push(new Bullet(this.x, this.y, xv, yv, true))
         }
       }
       this.lastShot = now;
@@ -117,12 +115,10 @@ export class Enemy {
   }
 
   draw(ctx) {
+    let broken = this.sinking && this.type == enemyTypes.boat && !this.splashAnimation.played;
     if (this.sunk) return;
     if (this.sinking) {
-      if (this.type == enemyTypes.boat && !this.splashAnimation.played) {
-
-      } else this.splashAnimation.draw(ctx, this.x, this.y, false, .4);
-      return;
+      if (!broken) this.splashAnimation.draw(ctx, this.x, this.y, false, .4);
     }
     ctx.save();
 
@@ -133,7 +129,13 @@ export class Enemy {
     // ctx.closePath()
     // ctx.fill();
 
-    this.animation.draw(ctx, 0, 0, false, .4);
+    if (broken) {
+      ctx.scale(.4,.4);
+      ctx.drawImage(imgs.brokenEnemy, -163/2, -235/2)
+    } else if (!this.sinking) {
+      this.animation.draw(ctx, 0, 0, false, .4);
+    }
+
 
     ctx.restore();
 
@@ -145,7 +147,7 @@ export class Enemy {
       this.sinking = true;
       this.splashAnimation.play();
       this.sinkInst = Date.now() + 400;
-      if (this.type = enemyTypes.boat) this.sinkInst += 400;
+      if (this.type == enemyTypes.boat) this.sinkInst += 800;
 
       sounds.splash.volume = 0.2;
       sounds.splash.currentTime = 0;

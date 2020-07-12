@@ -1,6 +1,7 @@
-import { diceManager, gameState, gameUpdate, gameDraw, resetLevel } from "./main";
+import { diceManager, gameState, gameUpdate, gameDraw, resetLevel, startGame, initLevel2 } from "./main";
 import GameState from "./state"
 import { getEl, canvas } from "./globals";
+import { doneLoadingResrcs } from "./load"
 
 export const keys = {}
 export const cursor = { x: -1, y: -1 }
@@ -56,4 +57,15 @@ export function setUpInputs() {
 
 getEl("continueBtn").addEventListener("click", () => {
     gameState.setState(GameState.GAME, gameUpdate, gameDraw)
+    getEl("continueBtn").disabled = true;
+})
+
+getEl("playBtn").addEventListener("click", () => {
+    if (doneLoadingResrcs()) startGame();
+})
+
+getEl("credBtn").addEventListener("click", () => {
+    if (gameState.state == GameState.MENU) {
+        gameState.setState(GameState.CRED, () => {}, () => {});
+    }
 })
