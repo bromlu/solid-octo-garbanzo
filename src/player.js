@@ -33,6 +33,12 @@ export class Player {
     this.lastDash = 0;
 
     this.forwardEnd = 0;
+
+    this.message = ""
+    this.lastMessageInst = 0;
+
+    this.shield = false;
+    this.shieldInst = 0;
   }
 
   reset() {
@@ -57,6 +63,8 @@ export class Player {
     this.afterImages = [];
     this.lastDash = 0;
 
+    this.message = ""
+    this.lastMessageInst = 0;
   }
 
   setAnimations() {
@@ -79,7 +87,7 @@ export class Player {
     // ctx.arc(0, 0, this.r, 0, TAU);
     // ctx.closePath()
     // ctx.fill();
-
+    
     if (this.v > 2) {
       this.moveAnimation.draw(ctx, 0, 0, false, .4);
     } else if (this.vTheta > .07) { 
@@ -89,6 +97,15 @@ export class Player {
     } else {
       this.stillAnimation.draw(ctx, 0, 0, false, .4);
     }
+    
+    if (this.shield) {
+      ctx.beginPath()
+      ctx.arc(0, 0, this.r, 0, TAU);
+      ctx.closePath()
+      ctx.strokeStyle = "#949";
+      ctx.stroke();
+    }
+
     
     ctx.restore();
     if(this.isDashing()) {
@@ -103,7 +120,7 @@ export class Player {
         ctx.restore();
       }
       this.afterImages.push({x, y, theta})
-    } 
+    }
 
 }
 
@@ -117,6 +134,17 @@ export class Player {
     //     this.chargingSpecial = false
     //   }
     // }
+
+    if (this.shield) {
+      this.r = 32
+      if (Date.now() - this.shieldInst > 500) {
+        resourceManager.useControl()
+        if (resourceManager.control <= 0) {
+          this.shield = false;
+        }
+      }
+    }
+    else this.r = 16
 
     this.v *= this.friction;
     this.vTheta *= this.frictionTheta;
@@ -222,18 +250,19 @@ export class Player {
   }
 
   handleCollision() {
-    // this.chargingSpecial = false;
-    // if (!diceManager.rolling) {
-    //   if(diceManager.allDice.length === 1) {
-    //     // YOU LOSE
-    //     console.log("YOU LOSE")
-    //   } else {
-    //     diceManager.allDice.pop();
-    //   }
+    this.chargingSpecial = false;
+    if (!diceManager.rolling) {
+      if(diceManager.allDice.length === 1) {
+        // YOU LOSE
+        console.log("YOU LOSE")
+        return;
+      }
+      diceManager.loseFace();
+    }
 
-    //   diceManager.force = 0;
-    //   diceManager.rollAll();
-    // } 
+    if (Date.now() - this.lastMessageInst > 2000 && Math.random() < .4) {
+      this.showHurtMessage();
+    }
   }
 
   isDashing() {
@@ -243,4 +272,44 @@ export class Player {
   // resolveDiceRoll() {
   //   if (diceManager.allDice[1]) this.resolveForceDice(diceManager.allDice[1].face);
   // }
+
+  shieldUp() {
+    this.shield = true;
+    this.shieldInst = Date.now();
+  }
+
+  showHurtMessage() {
+    this.showMessage(hurtMsgs[Math.floor(Math.random()*hurtMsgs.length)])
+  }
+
+  showMessage(msg) {
+    this.message = msg;
+    this.lastMessageInst = Date.now();
+  }
+  
+  drawMessage(ctx) {
+    let elapsed = Date.now() - this.lastMessageInst;
+    if (elapsed > 1500) return;
+    ctx.font = "30px Grenze Gotisch";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    let tm = ctx.measureText(this.message);
+    let w = tm.width + 30;
+    let h = 30 + 30;
+    let x = this.x
+    let y = this.y - h;
+
+    ctx.globalAlpha = 1 - (elapsed / 1500)
+    ctx.drawImage(imgs.text, x - w/2, y - h/2, w, h);
+    ctx.fillStyle = "#222"
+    ctx.fillText(this.message, x, y);
+    ctx.globalAlpha = 1
+  }
 }
+
+const hurtMsgs = [
+  "We've been hit!",
+  "We're going down!",
+  "We're going down!",
+]

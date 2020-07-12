@@ -15,6 +15,7 @@ export class Dice {
     this.y = 0;
     this.face = "";
     this.color = "";
+    this.faceIdx = 0;
     this.faces = faces;
     this.colors = colors;
     this.resolved = false;
@@ -65,6 +66,8 @@ export class Dice {
   }
 
   mapFaces(faces, colors) {
+    this.faces = faces;
+    this.colors = colors;
     const ctx = document.createElement("canvas").getContext("2d");
 
     ctx.canvas.width = 128;

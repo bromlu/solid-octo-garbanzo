@@ -21,6 +21,11 @@ export class ResourceManager {
     if (this.rudder < 0) this.rudder = 0;
   }
 
+  useControl() {
+    this.control--;
+    if (this.control < 0) this.control = 0;
+  }
+
 
   add(amt, color) {
     if (color == "red") {

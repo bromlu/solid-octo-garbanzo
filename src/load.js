@@ -18,7 +18,9 @@ const imgSources = {
   shield: "./assets/shield_icon.png",
   left_cannon: "./assets/left_cannon_icon.png",
   right_cannon: "./assets/right_cannon_icon.png",
-  kraken: "./assets/Tentacle.png"
+  kraken: "./assets/Tentacle.png",
+  text: "./assets/Text_Bubble.png",
+  rock: "./assets/Rocks.png"
 }
 
 const audioSources = {

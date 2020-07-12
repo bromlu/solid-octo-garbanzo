@@ -1,4 +1,5 @@
-import { enemies, player, enemyBullets, playerBullets, island } from './main'
+import { enemies, player, enemyBullets, playerBullets, island, obstacles } from './main'
+import { enemyTypes} from './globals'
 
 export class CollisionManager {
   constructor() {
@@ -15,6 +16,15 @@ export class CollisionManager {
         if (dx < enemy.r && dy < enemy.r) {
           bullet.sunk = true;
           this.handleEnemyHurt(enemy);
+        }
+      });
+      obstacles.forEach(obstacle => {
+        if(obstacle.type !== enemyTypes.kraken || !obstacle.shown) return;
+        let dx = Math.abs(bullet.x - obstacle.x)
+        let dy = Math.abs(bullet.y - obstacle.y)
+        if (dx < obstacle.r && dy < obstacle.r) {
+          bullet.sunk = true;
+          this.handleObstacleHurt(obstacle);
         }
       });
     });
@@ -40,6 +50,19 @@ export class CollisionManager {
         }
       }
     });
+
+    obstacles.forEach(obstacle => {
+      if(!obstacle.shown) return;
+      let dx = Math.abs(obstacle.x - player.x)
+      let dy = Math.abs(obstacle.y - player.y)
+      if (dx < player.r + obstacle.r && dy < player.r + obstacle.r) {
+        if (player.isDashing()) {
+          this.handleObstacleHurt(obstacle)
+        } else {
+          this.handlePlayerHurt();
+        }
+      }
+    });
   }
 
   handleEnemyHurt(enemy) {
@@ -48,5 +71,9 @@ export class CollisionManager {
 
   handlePlayerHurt() {
     player.handleCollision()
+  }
+
+  handleObstacleHurt(obstacle) {
+    obstacle.handleCollision()
   }
 }

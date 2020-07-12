@@ -37,7 +37,7 @@ export class Enemy {
       let frameSelector = Animation.getLoopingFrameSelector(1000, mantaRayFrames.length)
       this.animation = new Animation(imgs.manta, mantaRayFrames, frameSelector)
     } else if (type == enemyTypes.boat) {
-      let frameSelector = Animation.getLoopingFrameSelector(1000, enemeyShipFrames.length)
+      let frameSelector = Animation.getLoopingFrameSelector(1000, 2)
       this.animation = new Animation(imgs.enemyBoat, enemeyShipFrames, frameSelector)
     }
 

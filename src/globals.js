@@ -37,5 +37,6 @@ export const colorDict = {
 export const enemyTypes = {
   manta: 0,
   boat: 1,
-  kraken: 2
+  kraken: 2,
+  rock: 3
 }
