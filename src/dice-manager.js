@@ -36,17 +36,17 @@ export default class DiceManager {
   }
   
   addLevel1Dice() {
-    this.addDice(["left_cannon", "right_cannon", "forward", "dash", "shield", "X"], standardDiceColors)
+    this.allDice = []
+    this.addDice(["forward", "forward", "forward", "dash", "shield", "X"], standardDiceColors)
   }
 
   addLevel2Dice() {
-    this.addDice(["left_cannon", "right_cannon", "forward", "dash", "shield", "X"], standardDiceColors)
+    this.addLevel1Dice();
     this.addDice(["left_cannon", "right_cannon", "forward", "dash", "shield", "X"], standardDiceColors)
   }
 
   addLevel3Dice() {
-    this.addDice(["left_cannon", "right_cannon", "forward", "dash", "shield", "X"], standardDiceColors)
-    this.addDice(["left_cannon", "right_cannon", "forward", "dash", "shield", "X"], standardDiceColors)
+    this.addLevel2Dice()
     this.addDice(["left_cannon", "right_cannon", "forward", "dash", "shield", "X"], standardDiceColors)
   }
 

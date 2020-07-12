@@ -181,11 +181,11 @@ export function setupLevel() {
   enemyBullets.length = 0
   playerBullets.length = 0
   enemies.length = 0
-  diceManager.resetDice();
-  diceManager.rollAll();
   camera.yAnchor = 0;
   currentLevel++;
   spawner.addSpawnsForLevel(currentLevel)
+  // diceManager.resetDice();
   diceManager.addDiceForLevel(currentLevel)
+  diceManager.rollAll();
   console.log(currentLevel, spawner.enemiesToSpawn)
 } 
