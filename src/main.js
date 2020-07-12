@@ -31,6 +31,8 @@ export const camera = new Camera();
 window.camera = camera;
 export const enemies = [];
 window.enemies = enemies;
+export const obstacles = [];
+window.obstacles = obstacles;
 export const enemyBullets = [];
 export const playerBullets = [];
 export const island = new Island();
@@ -106,6 +108,9 @@ export function gameDraw() {
   enemies.forEach(enemy => {
     if (!enemy.sunk) enemy.draw(ctx);
   });
+  obstacles.forEach(obstacle => {
+    if (!obstacle.sunk) obstacle.draw(ctx);
+  });
   player.draw(ctx);
 
   enemyBullets.forEach(bullet => {
@@ -135,6 +140,11 @@ export function gameUpdate() {
     let enemy = enemies[i];
     if (enemy.sunk) enemies.splice(i--, 1);
     else enemy.update();
+  }
+  for (let i = 0; i < obstacles.length; i++) {
+    let obstacle = obstacles[i];
+    if (obstacle.sunk) obstacles.splice(i--, 1);
+    else obstacle.update();
   }
 
   for (let i = 0; i < enemyBullets.length; i++) {
