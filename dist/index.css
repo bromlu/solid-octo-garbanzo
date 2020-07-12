@@ -46,6 +46,7 @@ canvas.gone {
 
 #playBtn, #credBtn {
     width: 20%;
+    cursor: pointer;
 }
 
 body > div {
@@ -56,7 +57,7 @@ body > div {
 #credDiv {
     background-image: url("./assets/Credits_.png");
     background-size: contain;
-    font-family: ;
+    cursor: pointer;
 }
 
 #diceMenu {

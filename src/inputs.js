@@ -69,3 +69,9 @@ getEl("credBtn").addEventListener("click", () => {
         gameState.setState(GameState.CRED, () => {}, () => {});
     }
 })
+
+getEl("credDiv").addEventListener("click", () => {
+    if (gameState.state == GameState.CRED) {
+        gameState.setState(GameState.MENU, () => {}, () => {});
+    }
+})
