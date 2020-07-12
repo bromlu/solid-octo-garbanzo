@@ -1,6 +1,6 @@
 import GameState from "./state"
 import { SIZE, getEl, canvas, LINEWIDTH, MAPW } from "./globals"
-import { setUpInputs, keys } from './inputs';
+import { setUpInputs, keys, cursor } from './inputs';
 import { Particles } from "./particles"
 import { Dice } from "./dice"
 import DiceManager from "./dice-manager"
@@ -12,8 +12,9 @@ import { Enemy } from './enemy';
 import { RandomMovementAI, PatrolAI, TargettingAI } from './AI'
 import { CollisionManager } from "./collisions";
 import { Island } from "./island"
+import { TextParticles } from "./particles"
+import { ResourceManager } from "./resource"
 
-export const audCtx = new AudioContext();
 const ctx = canvas.getContext("2d")
 canvas.width = SIZE
 canvas.height = SIZE
@@ -33,7 +34,11 @@ window.enemies = enemies;
 export const enemyBullets = [];
 export const playerBullets = [];
 export const island = new Island();
+export const textParticles = new TextParticles();
+export const resourceManager = new ResourceManager();
 export let currentLevel = 1;
+
+export let lastKeys = {};
 
 function init() {
   ctx.lineWidth = LINEWIDTH;
@@ -45,7 +50,7 @@ function init() {
   let loadImgInterval = setInterval(() => {
     if (doneLoadingResrcs()) {
       player.setAnimations();
-      diceManager.addSpecialAbilityDice();
+      // diceManager.addSpecialAbilityDice();
       diceManager.addStandardDice();
       diceManager.addStandardDice();
       diceManager.addStandardDice();
@@ -66,7 +71,8 @@ init();
 
 function startGame() {
   gameState.setState(GameState.GAME, gameUpdate, gameDraw)
-  spawner.addLevel1Spawns()
+  spawner.addLevel1Spawns();
+  diceManager.rollAll();
   // spawner.addEnemy(new Enemy(0, -400, new RandomMovementAI(1000)))
 
   // dice.roll(Math.floor(Math.random() * 6), 2000)
@@ -112,6 +118,8 @@ export function gameDraw() {
   // ctx.restore();
   ctx.resetTransform();
   diceManager.draw(ctx)
+  resourceManager.draw(ctx);
+  textParticles.draw(ctx);
 }
 
 export function gameUpdate() {
@@ -141,8 +149,9 @@ export function gameUpdate() {
   }
 
   diceManager.update();
-  
   camera.update();
+  textParticles.update();
+  lastKeys = JSON.parse(JSON.stringify(keys));
 
   collisionManager.update();
 }
@@ -154,6 +163,7 @@ export function setupLevel() {
   playerBullets.length = 0
   enemies.length = 0
   diceManager.resetDice();
+  diceManager.rollAll();
   camera.yAnchor = 0;
   currentLevel++;
   spawner.addSpawnsForLevel(currentLevel)

@@ -10,6 +10,15 @@ const imgSources = {
   boat: "/assets/Boat_Movement.png",
   bullet: "/assets/Cannonballs.png",
   splash: "/assets/splash.png",
+  red: "/assets/red_face.png",
+  blue: "/assets/blue_face.png",
+  green: "/assets/green_face.png",
+  grey: "/assets/grey_face.png",
+  forward: "/assets/forward_icon.png",
+  dash: "/assets/dash_icon.png",
+  shield: "/assets/shield_icon.png",
+  left_cannon: "/assets/left_cannon_icon.png",
+  right_cannon: "/assets/right_cannon_icon.png",
 }
 
 const audioSources = {

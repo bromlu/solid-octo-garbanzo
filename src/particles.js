@@ -1,4 +1,63 @@
-const tau = 2 * Math.PI;
+import {TAU} from "./globals"
+
+
+export class TextParticles {
+    constructor() {
+        this.parts = [];
+    }
+    update() {
+        // console.log("asf")
+        let len = this.parts.length;
+        for (let i = 0; i < len; i++) {
+            if (this.parts[i].update) {
+                this.parts[i].update();
+            }
+            else {
+                this.parts.splice(i--, 1);
+                len--;
+            }
+        }
+    }
+
+    draw(ctx) {
+        for (let p of this.parts) {
+            if (p.draw) p.draw(ctx);
+        }
+    }
+
+    newTextPart(x, y, color, text) {
+        this.parts.push(textPart(x,y,color,text))
+    }
+
+}
+
+function textPart(x, y, color, text) {
+    return {
+        x: x,
+        y: y,
+        color: color,
+        o: 1,
+        draw(ctx) {
+            ctx.font = "30px Grenze Gotisch"
+            ctx.textAlign = "center"
+            ctx.textBaseline = "middle"
+            ctx.globalAlpha = Math.round(this.o*10) / 10;
+            ctx.fillStyle = color;
+            ctx.fillText(text, this.x, this.y);
+            ctx.globalAlpha = 1;
+        },
+        update() {
+            this.y -= 1;
+            this.o -= .03
+            if (this.o <= 0) {
+                this.update = null;
+            }
+        }
+    }
+}
+
+
+
 
 let partColors = ["#812", "#26C", "#262"];
 export const Particles = {
@@ -54,13 +113,13 @@ function newPart(x, y, color, rscale) {
         r: 1 + rscale * Math.random(),
         v: .2,
         color: color,
-        theta: Math.random() * tau,
+        theta: Math.random() * TAU,
         draw: function (ctx) {
             ctx.beginPath();
             let oldW = ctx.lineWidth;
             ctx.lineWidth = 1;
             ctx.fillStyle = this.color;
-            ctx.arc(this.x, this.y, this.r, 0, tau);
+            ctx.arc(this.x, this.y, this.r, 0, TAU);
             ctx.fill();
             ctx.closePath();
             ctx.lineWidth = oldW;
@@ -90,13 +149,13 @@ function newSpiralPart(x, y, color, rscale) {
         r: 2 + rscale * Math.random(),
         v: 5,
         color: Math.random() > .7 ? "white" : color,
-        theta: Math.random() * tau,
+        theta: Math.random() * TAU,
         draw: function (ctx) {
             ctx.beginPath();
             let oldW = ctx.lineWidth;
             ctx.lineWidth = 1;
             ctx.fillStyle = this.color;
-            ctx.arc(this.x, this.y, this.r, 0, tau);
+            ctx.arc(this.x, this.y, this.r, 0, TAU);
             ctx.fill();
             ctx.closePath();
             ctx.lineWidth = oldW;
@@ -125,13 +184,13 @@ function newSprayPart(x, y, color, rscale) {
         r: 1 + rscale * Math.random(),
         v: .2,
         color: color,
-        theta: -tau / 4,
+        theta: -TAU / 4,
         draw: function (ctx) {
             ctx.beginPath();
             let oldW = ctx.lineWidth;
             ctx.lineWidth = 1;
             ctx.fillStyle = this.color;
-            ctx.arc(this.x, this.y, this.r, 0, tau);
+            ctx.arc(this.x, this.y, this.r, 0, TAU);
             ctx.fill();
             ctx.closePath();
             ctx.lineWidth = oldW;
