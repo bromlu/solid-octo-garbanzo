@@ -176,6 +176,9 @@ export function gameUpdate() {
 }
 
 export function setupLevel() {
+  resourceManager.ammo = resourceManager.maxAmmo;
+  resourceManager.control = resourceManager.maxControl;
+  resourceManager.rudder = resourceManager.maxRudder;
   console.log("asdf")
   player.reset()
   enemyBullets.length = 0
