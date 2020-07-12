@@ -119,3 +119,13 @@ export const enemyTentacleFrames = [
   {"x":1148,"y":3,"w":230,"h":294,"ax":1271,"ay":246},
   {"x":1396,"y":2,"w":224,"h":292,"ax":1512,"ay":253},
 ]
+
+export const playerShootingFrames = [
+  {"x":7,"y":12,"w":141,"h":264,"ax":80,"ay":111},
+  {"x":169,"y":10,"w":120,"h":267,"ax":224,"ay":107},
+]
+
+export const enemyShootingFrames = [
+  {"x":5,"y":5,"w":173,"h":354,"ax":90,"ay":135},
+  {"x":204,"y":4,"w":174,"h":349,"ax":288,"ay":130},
+]
