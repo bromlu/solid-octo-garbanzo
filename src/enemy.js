@@ -1,16 +1,15 @@
 import { imgs } from "./load"
 import { enemyBullets, island } from "./main";
 import { Bullet } from "./bullet";
-import { SIZE, bounded, TAU } from "./globals";
-import Animation, { mantaRayFrames, splashFrames } from "./animation";
+import { SIZE, bounded, TAU, enemyTypes } from "./globals";
+import Animation, { mantaRayFrames, enemeyShipFrames, splashFrames } from "./animation";
 
 export class Enemy {
-  constructor(x, y, AI, sprite) {
+  constructor(x, y, AI, type) {
     this.x = x;
     this.y = y;
     this.theta = 0;
     this.AI = AI
-    this.sprite = sprite;
 
     this.r = 32;
     this.a = 0;
@@ -34,8 +33,15 @@ export class Enemy {
     this.sinking = false;
     this.sunk = false;
 
-    let frameSelector = Animation.getLoopingFrameSelector(1000, mantaRayFrames.length)
-    this.animation = new Animation(imgs.manta, mantaRayFrames, frameSelector)
+    if (type == enemyTypes.manta) {
+      let frameSelector = Animation.getLoopingFrameSelector(1000, mantaRayFrames.length)
+      this.animation = new Animation(imgs.manta, mantaRayFrames, frameSelector)
+    } else if (type == enemyTypes.boat) {
+      let frameSelector = Animation.getLoopingFrameSelector(1000, enemeyShipFrames.length)
+      this.animation = new Animation(imgs.enemyBoat, enemeyShipFrames, frameSelector)
+    }
+
+
 
     let splashFrameSelector = Animation.getLinearFrameSelector(400, splashFrames.length)
     this.splashAnimation = new Animation(imgs.splash, splashFrames, splashFrameSelector);

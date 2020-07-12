@@ -33,3 +33,8 @@ export const colorDict = {
   "blue": "#05C7F2",
   "grey": "#6D848C",
 }
+
+export const enemyTypes = {
+  manta: 0,
+  boat: 1,
+}
