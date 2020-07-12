@@ -1,29 +1,28 @@
 
 export let loaded = 0;
 const imgSources = {
-  player: "/assets/player.png",
-  map: "/assets/ocean.png",
-  enemyBoat: "/assets/Enemy_Boat_Movement.png",
-  dash: "/assets/dash.png",
-  island: "/assets/island.png",
-  manta: "/assets/Manta_Ray.png",
-  boat: "/assets/Boat_Movement.png",
-  bullet: "/assets/Cannonballs.png",
-  splash: "/assets/splash.png",
-  red: "/assets/red_face.png",
-  blue: "/assets/blue_face.png",
-  green: "/assets/green_face.png",
-  grey: "/assets/grey_face.png",
-  forward: "/assets/forward_icon.png",
-  dash: "/assets/dash_icon.png",
-  shield: "/assets/shield_icon.png",
-  left_cannon: "/assets/left_cannon_icon.png",
-  right_cannon: "/assets/right_cannon_icon.png",
-  kraken: "/assets/Tentacle.png"
+  player: "./assets/player.png",
+  map: "./assets/ocean.png",
+  enemyBoat: "./assets/Enemy_Boat_Movement.png",
+  island: "./assets/island.png",
+  manta: "./assets/Manta_Ray.png",
+  boat: "./assets/Boat_Movement.png",
+  bullet: "./assets/Cannonballs.png",
+  splash: "./assets/splash.png",
+  red: "./assets/red_face.png",
+  blue: "./assets/blue_face.png",
+  green: "./assets/green_face.png",
+  grey: "./assets/grey_face.png",
+  forward: "./assets/forward_icon.png",
+  dash: "./assets/dash_icon.png",
+  shield: "./assets/shield_icon.png",
+  left_cannon: "./assets/left_cannon_icon.png",
+  right_cannon: "./assets/right_cannon_icon.png",
+  kraken: "./assets/Tentacle.png"
 }
 
 const audioSources = {
-  clunk: "/assets/clunk.mp3",
+  clunk: "./assets/clunk.mp3",
 }
 export const imgs = {}
 export const sounds = {}
