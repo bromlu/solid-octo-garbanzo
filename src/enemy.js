@@ -23,9 +23,9 @@ export class Enemy {
     this.friction = .9
     this.frictionTheta = .8
 
-    this.reloadTime = 1000;
+    this.reloadTime = 3000;
     this.lastShot = 0;
-    this.numBullets = 5;
+    this.numBullets = 3;
     this.bulletV = 30;
 
     this.health = 100;

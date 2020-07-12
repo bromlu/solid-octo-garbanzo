@@ -9,6 +9,7 @@ export class CollisionManager {
     playerBullets.forEach(bullet => {
       if (bullet.sinking || bullet.sunk) return;
       enemies.forEach(enemy => {
+        if (enemy.sinking || enemy.sunk) return;
         let dx = Math.abs(bullet.x - enemy.x)
         let dy = Math.abs(bullet.y - enemy.y)
         if (dx < enemy.r && dy < enemy.r) {
