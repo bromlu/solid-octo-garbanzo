@@ -90,7 +90,6 @@ gameState.tick();
 
 export function gameDraw() {
   ctx.clearRect(0,0,SIZE,SIZE)
-  // ctx.save();
 
   camera.moveCtx(ctx);
   let mapIdx = Math.floor(camera.y / MAPW);
@@ -119,8 +118,9 @@ export function gameDraw() {
   playerBullets.forEach(bullet => {
     if (!bullet.sunk) bullet.draw(ctx);
   });
-  diceManager.drawBar(ctx);
-  // ctx.restore();
+  // diceManager.drawBar(ctx);
+
+  player.drawMessage(ctx);
   ctx.resetTransform();
   diceManager.draw(ctx)
   resourceManager.draw(ctx);

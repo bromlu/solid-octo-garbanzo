@@ -10,8 +10,8 @@ import { sounds } from "./load";
 // const specialAbilityDiceFaces = ["Dash", "Fire", "Fire", "Dash", "Fire", "Fire"]
 // const DashDiceFaces = ["Fire", "Dash", "Dash", "Dash", "Dash", "Dash"]
 // const FireDiceFaces = ["Fire", "Fire", "Fire", "Fire", "Fire", "Fire"]
-// const standardDiceFaces = ["left_cannon", "right_cannon", "forward", "dash", "shield", "X"]
-const standardDiceFaces = ["left_cannon", "left_cannon", "left_cannon", "right_cannon", "right_cannon", "right_cannon"]
+const standardDiceFaces = ["left_cannon", "right_cannon", "forward", "dash", "shield", "X"]
+// const standardDiceFaces = ["left_cannon", "left_cannon", "left_cannon", "right_cannon", "right_cannon", "right_cannon"]
 const standardDiceColors = ["red", "blue", "green", "red", "blue", "grey"]
 // const standardDiceColors = ["grey", "grey", "grey", "grey", "grey", "grey"]
 export default class DiceManager {
@@ -156,6 +156,7 @@ export default class DiceManager {
       dice.done = false;
       dice.face = dice.faces[targetIdx];
       dice.color = dice.colors[targetIdx];
+      dice.faceIdx = targetIdx;
     }
     this.force = 0;
     this.rolling = true;
@@ -227,6 +228,9 @@ export default class DiceManager {
       case "right_cannon":
         player.shootRight();
         break;
+      case "shield":
+        player.shieldUp();
+        break;
       default:
         break;
     }
@@ -258,4 +262,37 @@ export default class DiceManager {
     return true;
   }
 
+  loseFace() {
+    let minScore = 100;
+    let minDice = null;
+    for (let i = 0; i < this.allDice.length; i++) {
+      let dice = this.allDice[i];
+      let diceScore = faceScores[dice.face];
+      if (diceScore < minScore) {
+        minDice = dice;
+        minScore = diceScore;
+      }
+    }
+    if (minDice == null) {
+      console.log("heavy damage");
+      return;
+    }
+    
+    minDice.mapFaces(
+      minDice.faces.map((face, idx) => idx == minDice.faceIdx ? "X" : face),
+      minDice.colors.map((color, idx) => idx == minDice.faceIdx ? "grey" : color)
+    );
+    minDice.face = "X"
+    minDice.color = "grey"
+  }
+
+}
+
+let faceScores = {
+  "left_cannon": 1,
+  "right_cannon": 1,
+  "forward": 9,
+  "dash": 2,
+  "shield": 2,
+  "X": 100
 }

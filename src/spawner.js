@@ -54,7 +54,9 @@ export class Spawner {
       new Obstacles(0, -1200, enemyTypes.kraken),
       new Obstacles(200, -800, enemyTypes.kraken),
       new Obstacles(-200, -800, enemyTypes.kraken),
-      new Obstacles(0, -200, enemyTypes.kraken),
+      new Obstacles(100, -200, enemyTypes.kraken),
+      new Obstacles(-100, -200, enemyTypes.kraken),
+      new Obstacles(300, -300, enemyTypes.rock),
     ]
   }
   
