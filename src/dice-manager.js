@@ -1,16 +1,19 @@
 import { Dice } from "./dice";
-import { SIZE, randBell, bounded, lerp, getEl } from "./globals"
-import { keys } from "./inputs"
-import { player } from "./main"
+import { SIZE, randBell, bounded, lerp, getEl, TAU } from "./globals"
+import { keys, cursor } from "./inputs"
+import { player, lastKeys, textParticles, resourceManager } from "./main"
 import { sounds } from "./load";
 
-const controlModifierDiceFaces = ["1", "2", "3", "-1", "-2", "0"]
-const abilityDiceFaces = [" ", "Dash", "Fire"]
+// const controlModifierDiceFaces = ["1", "2", "3", "-1", "-2", "0"]
+// const abilityDiceFaces = [" ", "Dash", "Fire"]
 
-const standardDiceFaces = ["1", "2", "3", "-1", "-2", "0"]
-const specialAbilityDiceFaces = ["Dash", "Fire", "Fire", "Dash", "Fire", "Fire"]
-const DashDiceFaces = ["Fire", "Dash", "Dash", "Dash", "Dash", "Dash"]
-const FireDiceFaces = ["Fire", "Fire", "Fire", "Fire", "Fire", "Fire"]
+// const specialAbilityDiceFaces = ["Dash", "Fire", "Fire", "Dash", "Fire", "Fire"]
+// const DashDiceFaces = ["Fire", "Dash", "Dash", "Dash", "Dash", "Dash"]
+// const FireDiceFaces = ["Fire", "Fire", "Fire", "Fire", "Fire", "Fire"]
+// const standardDiceFaces = ["left_cannon", "right_cannon", "forward", "dash", "shield", "X"]
+const standardDiceFaces = ["left_cannon", "left_cannon", "left_cannon", "right_cannon", "right_cannon", "right_cannon"]
+const standardDiceColors = ["red", "blue", "green", "red", "blue", "grey"]
+// const standardDiceColors = ["grey", "grey", "grey", "grey", "grey", "grey"]
 export default class DiceManager {
   constructor() {
     this.allDice = [];
@@ -64,8 +67,9 @@ export default class DiceManager {
 
   resetDice() {
     this.allDice.forEach(dice => {
-      dice.rotXTarget = Math.PI / 4;
-      dice.rotYTarget = Math.PI / 4;
+      dice.rotXTarget = Math.PI / 4 + Math.PI/2 * Math.floor((Math.random() * 3));
+      dice.rotYTarget = Math.PI / 4 + Math.PI/2 * Math.floor((Math.random() * 3));
+  
       dice.face = "";
     })
   }
@@ -76,34 +80,56 @@ export default class DiceManager {
   }
 
   getBoundedForce() { //gives a number between 0 and maxforce
-    let dir = (Math.floor(this.force / this.maxForce) % 2);
-    let f = this.force % this.maxForce
-    return dir == 0 ? f : this.maxForce - f;
+    // let dir = (Math.floor(this.force / this.maxForce) % 2);
+    // let f = this.force % this.maxForce
+    // return dir == 0 ? f : this.maxForce - f;
+    return this.maxForce;
   }
 
   addDice(faces, color) {
     this.allDice.push(new Dice(faces, color));
+    this.setDicePositions()
   }
 
-  addStandardDice(color = "#777") {
-    this.addDice(standardDiceFaces, color)
+  addStandardDice() {
+    this.addDice(standardDiceFaces, standardDiceColors)
   }
 
-  addSpecialAbilityDice(color = "#777") {
-    // this.addDice(DashDiceFaces, color)
-    this.addDice(FireDiceFaces, color)
-  }
+  // addSpecialAbilityDice(color = "#777") {
+  //   // this.addDice(DashDiceFaces, color)
+  //   this.addDice(FireDiceFaces, color)
+  // }
 
-  draw(ctx) {
-    // if (Date.now() - this.lastRoll > this.maxRollDuration) return; //maybe need this optimization later
+  setDicePositions() {
     let n = this.allDice.length;
     let width = .9 * SIZE;
     for (let i = 0; i < n; i++) {
       let y = .9 * SIZE;
       let x = SIZE / 2 - width / 2 + (i + 1) * (width / (n + 1));
       let dice = this.allDice[i];
-      dice.draw(ctx, x, y)
+      dice.x = x;
+      dice.y = y;
     }
+  }
+
+  draw(ctx) {
+    // if (Date.now() - this.lastRoll > this.maxRollDuration) return; //maybe need this optimization later
+    this.allDice.forEach(dice => {
+      if (!this.rolling && dice.resolved) {
+        ctx.globalAlpha = .2;
+        dice.draw(ctx)
+        ctx.globalAlpha = 1;
+      } else {
+        dice.draw(ctx)
+      }
+      if (dice.hover) {
+        ctx.beginPath()
+        ctx.arc(dice.x, dice.y, 50, 0, TAU);
+        ctx.strokeStyle = "yellow";
+        ctx.stroke();
+        ctx.closePath()
+      }
+    });
   }
 
   drawBar(ctx) {
@@ -124,10 +150,12 @@ export default class DiceManager {
 
     for (let i = 0; i < n; i++) {
       let dice = this.allDice[i];
+      dice.hover = false;
       let targetIdx = Math.floor(Math.random() * 6)
       dice.roll(targetIdx, randBell(this.rollDuration, .3), this.force);
       dice.done = false;
-      dice.face = dice.faces[targetIdx]; //TODO use me
+      dice.face = dice.faces[targetIdx];
+      dice.color = dice.colors[targetIdx];
     }
     this.force = 0;
     this.rolling = true;
@@ -137,8 +165,6 @@ export default class DiceManager {
   onRollFinished() {
     this.rolling = false;
     this.force = 0;
-
-    player.resolveDiceRoll();
   }
 
   update() {
@@ -159,15 +185,77 @@ export default class DiceManager {
           console.log("clunk")
           sounds.clunk.currentTime = 0;
           sounds.clunk.play();
+          dice.resolved = false;
         }
       }
       if (numDone == this.allDice.length) this.onRollFinished();
+    } else if (!this.allResolved()) { //set hover, handle click
+      for (let dice of this.allDice) {
+        dice.hover = false;
+        if (dice.resolved) continue;
+        if (dice.contains(cursor.x, cursor.y)) {
+          dice.hover = true;
+          if (!lastKeys[0] && keys[0]) { //LMB
+            this.resolveDice(dice)
+            return;
+          } else if (!lastKeys[2] && keys[2]) { //RMB
+            this.resolveDiceColor(dice)
+            return;
+          }
+        }
+      }
     } else {
-
-      if (keys[32]) this.increaseForce()
-
+      this.rollAll();
     }
+    // else {
+    //   if (keys[32]) this.increaseForce()
+    // }
   }
 
+  resolveDice(dice) {
+    // "left_cannon", "right_cannon", "forward", "dash", "shield", "X"
+    switch (dice.face) {
+      case "dash":
+        player.startDash();
+        break;
+      case "forward":
+        player.startForward();
+        break;
+      case "left_cannon":
+        player.shootLeft();
+        break;
+      case "right_cannon":
+        player.shootRight();
+        break;
+      default:
+        break;
+    }
+    dice.resolved = true;
+
+    // textParticles.newTextPart(dice.x, dice.y-30, "white", dice.face)
+  }
+
+  
+  resolveDiceColor(dice) {
+    let color = dice.color
+    let amt = 0;
+    for (let d of this.allDice) {
+      if (d.resolved) continue;
+      if (d.color == dice.color){
+        d.resolved = true;
+        let gain = Math.ceil(amt/2) + 1;
+        amt += gain
+        textParticles.newTextPart(d.x, d.y-30, "white", "+"+gain)
+      }
+    }
+    resourceManager.add(amt, color);
+  }
+
+  allResolved() {
+    for (let i = 0; i < this.allDice.length; i++) {
+      if (!this.allDice[i].resolved) return false;
+    }
+    return true;
+  }
 
 }

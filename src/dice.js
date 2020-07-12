@@ -10,9 +10,14 @@ const faceCoords = [
 ]
 
 export class Dice {
-  constructor(faces, color) {
+  constructor(faces, colors) {
+    this.x = 0;
+    this.y = 0;
     this.face = "";
+    this.color = "";
     this.faces = faces;
+    this.colors = colors;
+    this.resolved = false;
     this.done = true; //externally controlled
     this.canvas = document.createElement("canvas");
     document.body.appendChild(this.canvas)
@@ -43,32 +48,9 @@ export class Dice {
     var texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
 
-    const ctx = document.createElement("canvas").getContext("2d");
 
-    ctx.canvas.width = 128;
-    ctx.canvas.height = 128;
-
-    const faceInfos = [
-      { target: gl.TEXTURE_CUBE_MAP_POSITIVE_X, faceColor: color, textColor: '#0FF', text: faces[0] },
-      { target: gl.TEXTURE_CUBE_MAP_NEGATIVE_X, faceColor: color, textColor: '#00F', text: faces[1] },
-      { target: gl.TEXTURE_CUBE_MAP_POSITIVE_Y, faceColor: color, textColor: '#F0F', text: faces[2] },
-      { target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, faceColor: color, textColor: '#F00', text: faces[3] },
-      { target: gl.TEXTURE_CUBE_MAP_POSITIVE_Z, faceColor: color, textColor: '#FF0', text: faces[4] },
-      { target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, faceColor: color, textColor: '#0F0', text: faces[5] },
-    ];
-    faceInfos.forEach((faceInfo) => {
-      const {target, faceColor, textColor, text} = faceInfo;
-      generateFace(ctx, faceColor, textColor, text);
-
-      // Upload the canvas to the cubemap face.
-      const level = 0;
-      const internalFormat = gl.RGBA;
-      const format = gl.RGBA;
-      const type = gl.UNSIGNED_BYTE;
-      gl.texImage2D(target, level, internalFormat, format, type, ctx.canvas);
-    });
-    gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
-    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    
+    this.mapFaces(faces, colors)
 
     this.fieldOfViewRadians = degToRad(1);
     this.rotX = degToRad(0);
@@ -82,11 +64,46 @@ export class Dice {
     // Get the starting time.
   }
 
-  draw(ctx, x, y) {
+  mapFaces(faces, colors) {
+    const ctx = document.createElement("canvas").getContext("2d");
+
+    ctx.canvas.width = 128;
+    ctx.canvas.height = 128;
+    const faceInfos = [
+      { target: this.gl.TEXTURE_CUBE_MAP_POSITIVE_X, faceColor: colors[0], textColor: '#222', text: faces[0] },
+      { target: this.gl.TEXTURE_CUBE_MAP_NEGATIVE_X, faceColor: colors[1], textColor: '#222', text: faces[1] },
+      { target: this.gl.TEXTURE_CUBE_MAP_POSITIVE_Y, faceColor: colors[2], textColor: '#222', text: faces[2] },
+      { target: this.gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, faceColor: colors[3], textColor: '#222', text: faces[3] },
+      { target: this.gl.TEXTURE_CUBE_MAP_POSITIVE_Z, faceColor: colors[4], textColor: '#222', text: faces[4] },
+      { target: this.gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, faceColor: colors[5], textColor: '#222', text: faces[5] },
+    ];
+    faceInfos.forEach((faceInfo) => {
+      const {target, faceColor, textColor, text} = faceInfo;
+      generateFace(ctx, faceColor, textColor, text);
+
+      // Upload the canvas to the cubemap face.
+      const level = 0;
+      const internalFormat = this.gl.RGBA;
+      const format = this.gl.RGBA;
+      const type = this.gl.UNSIGNED_BYTE;
+      this.gl.texImage2D(target, level, internalFormat, format, type, ctx.canvas);
+    });
+    this.gl.generateMipmap(this.gl.TEXTURE_CUBE_MAP);
+    this.gl.texParameteri(this.gl.TEXTURE_CUBE_MAP, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR_MIPMAP_LINEAR);
+
+  }
+
+  contains(x, y) {
+    let dx = this.x - x;
+    let dy = this.y - y;
+    return dx*dx + dy*dy < 50*50;
+  }
+
+  draw(ctx) {
     this.drawScene()
     this.canvas.height = 100;
     this.canvas.width = 100;
-    ctx.drawImage(this.gl.canvas, x-50, y-50, 100, 100)
+    ctx.drawImage(this.gl.canvas, this.x-50, this.y-50, 100, 100)
   }
 
   drawScene() {
@@ -189,11 +206,19 @@ function degToRad(d) {
 }
 
 function generateFace(ctx, faceColor, textColor, text) {
-  ctx.fillStyle = faceColor;
+  let backImg = imgs[faceColor];
   const {width, height} = ctx.canvas;
-  ctx.fillRect(0, 0, width, height);
-  if (text === "Dash") {
-    ctx.drawImage(imgs.dash, 0, 0, width, height);
+  if (backImg) {
+    ctx.drawImage(backImg, 0, 0, width, height);
+  } else {
+    ctx.fillStyle = faceColor;
+    ctx.fillRect(0, 0, width, height);
+    
+  }
+
+  let img = imgs[text];
+  if (img) {
+    ctx.drawImage(img, 0, 0, width, height);
   } else {
     ctx.font = `${width * 0.7}px sans-serif`;
     ctx.textAlign = 'center';

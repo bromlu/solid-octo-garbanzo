@@ -18,7 +18,24 @@ export const randBell = (num, frac=.5) => {
 
 export const bounded = (min, num, max) => Math.max(min, Math.min(max, num))
 
+export const shuffle = (array) => {
+  for(let i = array.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * i)
+    const temp = array[i]
+    array[i] = array[j]
+    array[j] = temp
+  }
+}
+
+export const colorDict = {
+  "red": "#F22929",
+  "green": "#30D9A9",
+  "blue": "#05C7F2",
+  "grey": "#6D848C",
+}
+
 export const enemyTypes = {
   manta: 0,
   boat: 1,
+  kraken: 2
 }

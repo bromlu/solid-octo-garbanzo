@@ -1,7 +1,9 @@
 import { diceManager, gameState, gameUpdate, gameDraw, resetLevel } from "./main";
 import GameState from "./state"
-import { getEl } from "./globals";
+import { getEl, canvas } from "./globals";
+
 export const keys = {}
+export const cursor = { x: -1, y: -1 }
 
 export const K_ESC = 27
 export const MLEFT = 0
@@ -26,28 +28,25 @@ export function setUpInputs() {
     window.addEventListener("keyup", e => {
         let k = e.keyCode
         keys[k] = false
-        // if (k == SPACE) {
-        //     diceManager.rollAll();
-        // }
     })
 
-    window.addEventListener("mousedown", e => {
+    canvas.addEventListener("mousedown", e => {
         e.preventDefault()
 
         let k = e.button
         keys[k] = true
-        if (k != MLEFT) return //only left click
         // left click actions here
-        
+
     })
-    window.addEventListener("mouseup", e => {
+    canvas.addEventListener("mouseup", e => {
         let k = e.button
         keys[k] = false
     })
-    window.addEventListener("mousemove", e => {
-        let k = e.button
-        if (keys[k] == true) return;
-        keys[k] = true
+
+    canvas.addEventListener("mousemove", e => {
+        cursor.x = Math.round(e.offsetX * canvas.width / canvas.clientWidth)
+        cursor.y = Math.round(e.offsetY * canvas.height / canvas.clientHeight)
+
     })
 
     canvas.addEventListener("contextmenu", e => {
