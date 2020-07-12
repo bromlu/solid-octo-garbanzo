@@ -1,9 +1,9 @@
 import { TAU, SIZE, bounded, lerp } from "./globals";
-import { imgs } from "./load"
+import { imgs, sounds } from "./load"
 import { keys, UP, LEFT, RIGHT, SPACE, A, D, W } from "./inputs"
 import { diceManager, playerBullets, enemies, resourceManager } from "./main";
 import { Bullet } from "./bullet";
-import Animation, { playerShipFrames } from "./animation";
+import Animation, { playerShipFrames, shieldFrames } from "./animation";
 
 
 export class Player {
@@ -54,17 +54,15 @@ export class Player {
     this.forceStuck = false;
     this.friction = .9
     this.frictionTheta = .8
-
     this.hurtTimer = 0;
-
     this.chargingSpecial = false;
     this.bulletV = 30;
-
     this.afterImages = [];
     this.lastDash = 0;
-
     this.message = ""
     this.lastMessageInst = 0;
+    this.shield = false;
+    this.shieldInst = 0;
   }
 
   setAnimations() {
@@ -73,6 +71,7 @@ export class Player {
 
     this.stillAnimation = new Animation(imgs.boat, playerShipFrames, t => 0)
     this.turnAnimation = new Animation(imgs.boat, playerShipFrames, t => 2)
+    this.shieldAnimation = new Animation(imgs.forcefield, shieldFrames, Animation.getLoopingFrameSelector(500, 2))
   }
 
   draw(ctx) {
@@ -99,11 +98,12 @@ export class Player {
     }
     
     if (this.shield) {
-      ctx.beginPath()
-      ctx.arc(0, 0, this.r, 0, TAU);
-      ctx.closePath()
-      ctx.strokeStyle = "#949";
-      ctx.stroke();
+      this.shieldAnimation.draw(ctx, 0, 0, false, .5);
+      // ctx.beginPath()
+      // ctx.arc(0, 0, this.r, 0, TAU);
+      // ctx.closePath()
+      // ctx.strokeStyle = "#949";
+      // ctx.stroke();
     }
 
     
@@ -168,16 +168,16 @@ export class Player {
     
     this.vTheta += this.aTheta;
     this.theta += this.vTheta;
-    if (this.theta < -TAU/4) {
-      this.theta = -TAU/4;
-      this.vTheta = 0;
-      if (this.aTheta) resourceManager.rudder++
-    } else if (this.theta > TAU/4) {
-      this.theta = TAU/4;
-      this.vTheta = 0;
-      if (this.aTheta) resourceManager.rudder++
 
-    }
+    // if (this.theta < -TAU/4) {
+    //   this.theta = -TAU/4;
+    //   this.vTheta = 0;
+    //   if (this.aTheta) resourceManager.rudder++
+    // } else if (this.theta > TAU/4) {
+    //   this.theta = TAU/4;
+    //   this.vTheta = 0;
+    //   if (this.aTheta) resourceManager.rudder++
+    // }
 
     this.x += this.v * Math.sin(this.theta);
     this.y -= this.v * Math.cos(this.theta);
@@ -186,13 +186,20 @@ export class Player {
   }
 
   startForward() {
-    this.forwardEnd = Date.now() + 2000
+    this.forwardEnd = Date.now() + 2000;
+    if (Math.random() < .4) this.showMessage("Onward!")
   }
 
   startDash() {
     this.v += 45;
     this.lastDash = Date.now();
     this.afterImages = [];
+
+    if (Math.random() < .4) this.showMessage("Full steam ahead!")
+
+    sounds.dash.volume = 0.2;
+    sounds.dash.currentTime = 0;
+    sounds.dash.play();
   }
 
   shootRight() {
@@ -200,6 +207,10 @@ export class Player {
     if (n > 5) n = 5;
     if (n == 0) { console.log("no ammo"); return;}
     resourceManager.useAmmo(n);
+
+    sounds.shoot.volume = 0.2;
+    sounds.shoot.currentTime = 0;
+    sounds.shoot.play();
 
     let spread = Math.PI / 2;
     for (let i = 0; i < n; i++) {
@@ -217,6 +228,10 @@ export class Player {
     resourceManager.useAmmo(n);
 
     if (n == 0) { console.log("no ammo"); return;}
+
+    sounds.shoot.volume = 0.2;
+    sounds.shoot.currentTime = 0;
+    sounds.shoot.play();
 
     let spread = Math.PI / 2;
     for (let i = 0; i < n; i++) {
@@ -250,6 +265,10 @@ export class Player {
   }
 
   handleCollision() {
+    if (this.shield) {
+      //TODO: shield sound?
+      return;
+    }
     this.chargingSpecial = false;
     if (!diceManager.rolling) {
       if(diceManager.allDice.length === 1) {

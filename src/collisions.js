@@ -1,5 +1,6 @@
 import { enemies, player, enemyBullets, playerBullets, island, obstacles } from './main'
 import { enemyTypes} from './globals'
+import { sounds } from './load'
 
 export class CollisionManager {
   constructor() {
@@ -66,14 +67,29 @@ export class CollisionManager {
   }
 
   handleEnemyHurt(enemy) {
+    if(sounds.hit.currentTime > 1 || sounds.hit.currentTime == 0) {
+      sounds.hit.volume = 0.2;
+      sounds.hit.currentTime = 0.85;
+      sounds.hit.play();
+    }
     enemy.handleCollision()
   }
 
   handlePlayerHurt() {
+    if(sounds.hit.currentTime > 1 || sounds.hit.currentTime == 0) {
+      sounds.hit.volume = 0.2;
+      sounds.hit.currentTime = 0.85;
+      sounds.hit.play();
+    }
     player.handleCollision()
   }
 
   handleObstacleHurt(obstacle) {
+    if(sounds.hit.currentTime > 1 || sounds.hit.currentTime == 0) {
+      sounds.hit.volume = 0.2;
+      sounds.hit.currentTime = 0.85;
+      sounds.hit.play();
+    }
     obstacle.handleCollision()
   }
 }

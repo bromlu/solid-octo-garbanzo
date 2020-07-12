@@ -20,11 +20,19 @@ const imgSources = {
   right_cannon: "./assets/right_cannon_icon.png",
   kraken: "./assets/Tentacle.png",
   text: "./assets/Text_Bubble.png",
-  rock: "./assets/Rocks.png"
+  rock: "./assets/Rocks.png",
+  forcefield: "./assets/shield.png",
+  brokenEnemy: "./assets/shield.png",
 }
 
 const audioSources = {
   clunk: "./assets/clunk.mp3",
+  dash: "./assets/dash.mp3",
+  enemy_attack: "./assets/enemy_attack.mp3",
+  hit: "./assets/hit.mp3",
+  ocean_ambient: "./assets/ocean_ambient.mp3",
+  shoot: "./assets/shoot.mp3",
+  splash: "./assets/splash.mp3"
 }
 export const imgs = {}
 export const sounds = {}

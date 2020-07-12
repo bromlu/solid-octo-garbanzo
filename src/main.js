@@ -14,6 +14,7 @@ import { CollisionManager } from "./collisions";
 import { Island } from "./island"
 import { TextParticles } from "./particles"
 import { ResourceManager } from "./resource"
+import { sounds } from "./load";
 
 const ctx = canvas.getContext("2d")
 canvas.width = SIZE
@@ -73,6 +74,9 @@ init();
 
 function startGame() {
   gameState.setState(GameState.GAME, gameUpdate, gameDraw)
+  sounds.ocean_ambient.loop = true;
+  sounds.ocean_ambient.volume = 0.07;
+  sounds.ocean_ambient.play();
   spawner.addLevel1Spawns();
   diceManager.rollAll();
   // spawner.addEnemy(new Enemy(0, -400, new RandomMovementAI(1000)))

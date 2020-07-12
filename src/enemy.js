@@ -1,4 +1,4 @@
-import { imgs } from "./load"
+import { imgs, sounds } from "./load"
 import { enemyBullets, island } from "./main";
 import { Bullet } from "./bullet";
 import { SIZE, bounded, TAU, enemyTypes } from "./globals";
@@ -10,6 +10,7 @@ export class Enemy {
     this.y = y;
     this.theta = 0;
     this.AI = AI
+    this.type = type;
 
     this.r = 32;
     this.a = 0;
@@ -39,9 +40,9 @@ export class Enemy {
     } else if (type == enemyTypes.boat) {
       let frameSelector = Animation.getLoopingFrameSelector(1000, 2)
       this.animation = new Animation(imgs.enemyBoat, enemeyShipFrames, frameSelector)
+
+      this.broken = new Animation(imgs.this.broken)
     }
-
-
 
     let splashFrameSelector = Animation.getLinearFrameSelector(400, splashFrames.length)
     this.splashAnimation = new Animation(imgs.splash, splashFrames, splashFrameSelector);
@@ -52,6 +53,10 @@ export class Enemy {
     if (this.sinking) {
       if (Date.now() >= this.sinkInst) {
         this.sunk = true;
+      }
+      if (this.type == enemyTypes.boat && this.sinkInst - Date.now()< 400 && !this.sinkAnimation.played) {
+        this.sinkAnimation.play()
+        this.sinkAnimation.played = true;
       }
       return;
     }
@@ -84,6 +89,10 @@ export class Enemy {
     let now = Date.now();
 
     if (this.AI.useShot(this) && now > this.lastShot + this.reloadTime) {
+      sounds.shoot.volume = 0.2;
+      sounds.shoot.currentTime = 0;
+      sounds.shoot.play();
+
       let useRight = this.AI.useRightSide;
       let n = this.numBullets;
       let spread = Math.PI / 2;
@@ -110,7 +119,9 @@ export class Enemy {
   draw(ctx) {
     if (this.sunk) return;
     if (this.sinking) {
-      this.splashAnimation.draw(ctx, this.x, this.y, false, .4);
+      if (this.type == enemyTypes.boat && !this.splashAnimation.played) {
+
+      } else this.splashAnimation.draw(ctx, this.x, this.y, false, .4);
       return;
     }
     ctx.save();
@@ -134,6 +145,11 @@ export class Enemy {
       this.sinking = true;
       this.splashAnimation.play();
       this.sinkInst = Date.now() + 400;
+      if (this.type = enemyTypes.boat) this.sinkInst += 400;
+
+      sounds.splash.volume = 0.2;
+      sounds.splash.currentTime = 0;
+      sounds.splash.play();
     }
   }
 }

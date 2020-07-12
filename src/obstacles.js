@@ -1,4 +1,4 @@
-import { imgs } from "./load"
+import { imgs, sounds } from "./load"
 import { player, island } from "./main"
 import { SIZE, bounded, TAU, enemyTypes } from "./globals";
 import Animation, { enemyTentacleFrames, splashFrames } from "./animation";
@@ -89,6 +89,10 @@ export class Obstacles {
         this.splashAnimation.play();
         this.showInst = Date.now() + 400;
         this.showHideTarget = Date.now() + this.showHideDuration
+
+        sounds.splash.volume = 0.02;
+        sounds.splash.currentTime = 0;
+        sounds.splash.play();
       }
     }
 
@@ -131,6 +135,10 @@ export class Obstacles {
       this.sinking = true;
       this.splashAnimation.play();
       this.sinkInst = Date.now() + 400;
+
+      sounds.splash.volume = 0.2;
+      sounds.splash.currentTime = 0;
+      sounds.splash.play();
     }
   }
 
